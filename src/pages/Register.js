@@ -1,116 +1,133 @@
-//pagina di login
-import React from 'react'
-import { useRef } from 'react';
-import {auth, providerGoogle, providerFacebook} from "../firebase-config";
-import {signInWithPopup} from 'firebase/auth';
-import {useNavigate} from "react-router-dom";
-import { login } from '../firebase-config';
+import React, { useRef } from 'react';
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { loginU } from '../redux/reducers/authSlice';
-import { supa } from '../components/utenti';
-import { logoutUser } from '../redux/reducers/userAuthSlice';
 
-function Register({}) {
+function Register() {
   const dispatch = useDispatch();
-  let navigate = useNavigate();  
+  let navigate = useNavigate();
 
-  const emailRef = useRef();      //attributes
+  // Riferimenti ai campi del form
+  const emailRef = useRef();
   const passwordRef = useRef();
- //_______________________________________________________________________________________
+  const nomeRef = useRef();
+  const cognomeRef = useRef();
+  const avatarRef = useRef(); // Puoi lasciare vuoto se non usato
+  const usernameRef = useRef(); // Aggiungi un riferimento per username
 
-//_______________________________________________________________________________________
-  const signInwithGoogle = () => {  //function for login with google
-    signInWithPopup(auth, providerGoogle).then((result) => {
-      const email = result.user.email;
-      const profilePic = result.user.photoURL;
-      const uid = result.user.uid;
+  const handleRegister = async () => {
+    // Ottieni i valori dai riferimenti
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    const nome = nomeRef.current.value;
+    const cognome = cognomeRef.current.value;
+    const avatar = avatarRef.current.value || ""; // Se avatar non è specificato, invia una stringa vuota
+    const username = usernameRef.current.value || email.split('@')[0]; // Usa l'email per derivare un username se non è specificato
 
-      if(supa.includes(uid)) {   //controllo per andare avanti, oppure da problemi, questi sono i permessi supervisore
-        localStorage.setItem("email", email);
-        localStorage.setItem("profilePic", profilePic);
-        localStorage.setItem("isAuth", true);
-        localStorage.setItem("uid", uid);
-        dispatch(loginU({ email }));
-        dispatch(logoutUser()); //in caso sia loggato come utente, allora mi disconetto
-        navigate("/");  //returns it to the home page
-      }
+    const userData = {
+      username: username, // Usa il campo 'username' fornito dall'utente, o derivato dall'email
+      nome: nome,
+      cognome: cognome,
+      email: email,
+      password: password,
+      avatar: avatar
+    };
 
-    })
-  }
-//___________________________________________________________________________________________
-  async function handelLogin () {    //login function
+    // Effettua la richiesta POST
     try {
-      await login(emailRef.current.value, passwordRef.current.value).then((result) => {
-        const email = result.user.email;
-  
-        localStorage.setItem("email", email);
-        localStorage.setItem("isAuth", true);
-        dispatch(loginU({ email }));
-        navigate("/");  //returns it to the home page
-      })
-    } catch{
+      const response = await fetch('http://localhost:3001/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+
+        //dispatch(loginU(result)); 
+        navigate("/login"); 
+      } else {
+        // Gestisci gli errori
+        console.error('Errore nella registrazione:', result);
+        alert('Errore nella registrazione. Prova di nuovo.');
+      }
+    } catch (error) {
+      console.error('Errore nella connessione:', error);
+      alert('Errore nella connessione. Riprova.');
     }
-
   }
-//_____________________________________________________________________________________________
-const singup = () => {
-  navigate("/signup");   //I report it to the sign up page
-}
 
-const forgotPassword = () => {
-  navigate("/recoverpassword");  //I report it to the recover password page
-}
-//___________________________________________________________________________________________
   return (
-    <>
-    <div className='Page'>  
-    <div className="ciao container">
-  <section className="gradient-custom">
-  <div className="container py-1">
-    <div className="row d-flex justify-content-center align-items-center h-70">
-      <div className="col-12 col-md-8 col-lg-6 col-xl-5">
-        <div className="card bg-dark text-white" style={{borderRadius: "2rem"}}>
-          <div className="card-body p-5 text-center">
+    <div className='Page'>
+      <div className="ciao container">
+        <section className="gradient-custom">
+          <div className="container py-1">
+            <div className="row d-flex justify-content-center align-items-center h-70">
+              <div className="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div className="card bg-dark text-white" style={{borderRadius: "2rem"}}>
+                  <div className="card-body p-5 text-center">
 
-            <div className="mb-md-5 mt-md-4 pb-5">
+                    <div className="mb-md-5 mt-md-4 pb-5">
 
-              <h2 className="fw-bold mb-2 text-uppercase">EpicEnergyService</h2>
-              <h2 className="fw-bold mb-2 text-uppercase">Register</h2>
-              <p className="text-white-50 mb-5">Please enter your email and password</p>
+                      <h2 className="fw-bold mb-2 text-uppercase">EpicEnergyService</h2>
+                      <h2 className="fw-bold mb-2 text-uppercase">Register</h2>
+                      <p className="text-white-50 mb-5">Please enter your email and password</p>
 
-              <div className="form-outline form-white mb-4">
-                <label class="form-label" htmlFor="typeEmailX">Email</label>
-                <input ref={emailRef} type="email" id="typeEmailX" className="form-control form-control-lg" placeholder="Inserisci email"/>
+                      {/* Campo per username */}
+                      <div className="form-outline form-white mb-4">
+                        <label className="form-label" htmlFor="typeUsernameX">Username</label>
+                        <input ref={usernameRef} type="text" id="typeUsernameX" className="form-control form-control-lg" placeholder="Inserisci username" />
+                      </div>
+
+                      {/* Campo per email */}
+                      <div className="form-outline form-white mb-4">
+                        <label className="form-label" htmlFor="typeEmailX">Email</label>
+                        <input ref={emailRef} type="email" id="typeEmailX" className="form-control form-control-lg" placeholder="Inserisci email" />
+                      </div>
+
+                      {/* Campo per password */}
+                      <div className="form-outline form-white mb-4">
+                        <label className="form-label" htmlFor="typePasswordX">Password</label>
+                        <input ref={passwordRef} type="text" id="typePasswordX" className="form-control form-control-lg" placeholder="Inserisci password" />
+                      </div>
+
+                      {/* Campo per nome */}
+                      <div className="form-outline form-white mb-4">
+                        <label className="form-label" htmlFor="typeNomeX">Nome</label>
+                        <input ref={nomeRef} type="text" id="typeNomeX" className="form-control form-control-lg" placeholder="Inserisci nome" />
+                      </div>
+
+                      {/* Campo per cognome */}
+                      <div className="form-outline form-white mb-4">
+                        <label className="form-label" htmlFor="typeCognomeX">Cognome</label>
+                        <input ref={cognomeRef} type="text" id="typeCognomeX" className="form-control form-control-lg" placeholder="Inserisci cognome" />
+                      </div>
+
+                      {/* Campo per avatar (opzionale) */}
+                      <div className="form-outline form-white mb-4">
+                        <label className="form-label" htmlFor="typeAvatarX">Avatar (opzionale)</label>
+                        <input ref={avatarRef} type="text" id="typeAvatarX" className="form-control form-control-lg" placeholder="Inserisci URL avatar" />
+                      </div>
+
+                      <button className="btn btn-outline-light btn-lg px-5" type="submit" onClick={handleRegister}>Register</button>
+                    </div>
+
+                    <div>
+                      <p className="mb-0">Hai già un account? <a style={{ cursor: 'pointer' }} onClick={() => {navigate("/login")}} className="text-white-50 fw-bold">Accedi</a></p>
+                    </div>
+
+                  </div>
+                </div>
               </div>
-
-              <div className="form-outline form-white mb-4">
-                <label class="form-label" htmlFor="typePasswordX"> Password</label>
-                <input ref={passwordRef} type="password" id="typePasswordX" className="form-control form-control-lg" placeholder="Inserisci password"/>
-              </div>
-
-              <p className="small mb-5 pb-lg-2" ><a className="text-white-50">Forgot password?</a></p>
-
-              <button className="btn btn-outline-light btn-lg px-5" type="submit" onClick={""}>Register</button>
-
-  
             </div>
-            <div>
-            <p className="mb-0">Accedi come utente <a style={{ cursor: 'pointer' }} onClick={() => {navigate("/loginuser")}} className="text-white-50 fw-bold">Accedi</a></p>
-            {/** <p className="mb-0">Do not have an account? <a onClick={singup} className="text-white-50 fw-bold">SignUp</a>
-              </p> */}
-            </div>
-
           </div>
-        </div>
+        </section>
       </div>
     </div>
-  </div>
-</section>
-    </div>
-    </div>
-    </>
   )
-
 }
 
-export default Register
+export default Register;
