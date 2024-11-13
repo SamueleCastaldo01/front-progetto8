@@ -26,18 +26,9 @@ export function AddCliente() {
     const [telefonoContatto, setTelefonoContatto] = useState('');
     const [logoAziendale, setLogoAziendale] = useState('');
 
+    const token = localStorage.getItem('authToken');
 
-    //const [gender, setGender] = useState('');
-    //const [username, setUsername] = useState('');
-    //const [password, setPassword] = useState('12345678');
-    //const [dataNascita, setDataNascita] = useState('');
-    //const [cittaNascita, setCittaNascita] = useState('');
-    //const [provinciaNascita, setProvinciaNascita] = useState('');
-    //const [showOptionalFields, setShowOptionalFields] = useState(false); // State for optional fields
 
-    //  const handleGenderChange = (event) => {
-    //      setGender(event.target.value);
-    //};
 
     const handleReset = () => {
         setRagioneSociale('');
@@ -63,6 +54,7 @@ export function AddCliente() {
             .join(' '); // Riunisce le parole in una stringa
     };
 
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -86,11 +78,13 @@ export function AddCliente() {
         };
 
         try {
+            const token = localStorage.getItem('authToken');
             // Effettua la richiesta fetch all'API
             const response = await fetch('http://localhost:3001/clienti', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
                 },
                 body: JSON.stringify(clienteData),
             });
