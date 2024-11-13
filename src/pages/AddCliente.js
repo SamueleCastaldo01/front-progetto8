@@ -54,76 +54,9 @@ export function AddCliente() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const usernameExists = await checkUsernameExists(username);
-        if (usernameExists) {
-            notifyErrorAddUsername();
-            return;
-        }
-    
-        if (telefono.length <= 9) {
-            notifyErrorAddCliente("Inserisci correttamente il numero di telefono");
-            return;
-        }
-    
-        const formattedDataNascita = moment(dataNascita).format('DD-MM-YYYY');
-    
-        try {
-            await addDoc(collection(db, 'customersTab'), {
-                username,
-                password,
-                nome,
-                cognome,
-                gender,
-                dataNascita: formattedDataNascita,
-                cittaNascita,
-                provinciaNascita,
-                codiceFiscale,
-                telefono,
-                email,
-                dataCreazione: Timestamp.fromDate(new Date()), // Aggiungi la data di creazione
-            });
-            handleReset();
-            navigate("/customerlist");
-            successAddCliente();
-        } catch (error) {
-            console.error('Errore nell\'aggiunta del cliente: ', error);
-        }
+
     };
 
-    const checkUsernameExists = async (username) => {
-        const q = query(collection(db, 'customersTab'), where('username', '==', username));
-        const querySnapshot = await getDocs(q);
-        return !querySnapshot.empty;
-    };
-
-    const generateCodiceFiscale = (nome, cognome, dataNascita, sesso, comune) => {
-        const cf = CodiceFiscale.fromData({
-            nome,
-            cognome,
-            data: dataNascita,
-            sesso,
-            comune: {
-                nome: comune.nome,
-                codice: comune.codice
-            }
-        });
-        return cf;
-    };
-
-    const handleCf = () => {
-        const sesso = gender === "maschio" ? "M" : "F";
-        const comune = {
-            nome: cittaNascita,
-            codice: 'F104'
-        };
-
-        try {
-            const cf = generateCodiceFiscale(nome, cognome, dataNascita, sesso, comune);
-            setCodiceFiscale(cf);
-        } catch (error) {
-            console.error('Errore nella generazione del codice fiscale: ', error);
-        }
-    };
 
     const handleGeneratePassword = () => {
         const length = 10;
@@ -218,10 +151,6 @@ export function AddCliente() {
                                     </div>
                                     <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
                                         <TextField className='w-100' label="Provincia di nascita" variant="outlined" color='tertiary' value={provinciaNascita} onChange={(e) => setProvinciaNascita(e.target.value)} />
-                                    </div>
-                                    <div className='d-flex mt-4 col-lg-4 col-md-6 col-sm-12'>
-                                        <TextField className='w-100' label="Codice Fiscale" variant="outlined" color='tertiary' value={codiceFiscale} onChange={(e) => setCodiceFiscale(e.target.value)} />
-                                        <Button onClick={handleCf} variant="contained">Genera</Button>    
                                     </div>
                                     <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
                                         <TextField className='w-100' label="Email" variant="outlined" color='tertiary' value={email} onChange={(e) => setEmail(e.target.value)} />
