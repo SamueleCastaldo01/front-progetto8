@@ -71,13 +71,7 @@ export function AddCliente() {
   //     const upperCharset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   //     const numberCharset = "0123456789";
 
-  //     let password = "";
-  //     password += upperCharset.charAt(Math.floor(Math.random() * upperCharset.length));
-  //     password += numberCharset.charAt(Math.floor(Math.random() * numberCharset.length));
 
-  //     for (let i = 2; i < length; i++) {
-  //         password += charset.charAt(Math.floor(Math.random() * charset.length));
-  //     }
 
   //     password = password.split('').sort(() => Math.random() - 0.5).join('');
   //     
