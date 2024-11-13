@@ -88,9 +88,9 @@ export function AddCliente() {
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.7}}
         >
-            <div className='container-fluid'>
+            <div className='container-fluid '>
                 <h2 className='titlePage'>Aggiungi un nuovo Cliente</h2>
 
                 <form onSubmit={handleSubmit}>
@@ -140,7 +140,7 @@ export function AddCliente() {
                             <TextField className='w-100' type='number' required label="Numero di Telefono Contatto" variant="outlined" color='tertiary' value={telefonoContatto} onChange={(e) => setTelefonoContatto(e.target.value)} />
                         </div>
                     </div>
-                    <Button className='mt-4' type="submit" variant="contained">Aggiungi Cliente</Button>
+                    <Button className='mt-4' type="submit" variant="contained">Aggiungi Cliente </Button>
                 </form>
             </div>
         </motion.div>
