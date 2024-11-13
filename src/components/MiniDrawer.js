@@ -239,8 +239,8 @@ export default function MiniDrawer( {signUserOut} ) {
         case '/addcustomer':
           setSelectedItem('addcustomer');
         break;
-      case '/aggiungischeda':
-        setSelectedItem('aggiungischeda');
+      case '/aggiungifatture':
+        setSelectedItem('aggiungifatture');
         break;
       case '/schededilavoro':
         setSelectedItem('schededilavoro');
@@ -478,9 +478,9 @@ export default function MiniDrawer( {signUserOut} ) {
                   <ListItemText primary="Fatture" sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
             </ListItem>
-            <ListItem  disablePadding sx={{ display: 'block' }} onClick={() => {navigate("/aggiungischeda")}}>
+            <ListItem  disablePadding sx={{ display: 'block' }} onClick={() => {navigate("/aggiungifatture")}}>
                 <ListItemButton sx={{ pl: 4 }}
-                    selected={selectedItem === "aggiungischeda"}
+                    selected={selectedItem === "aggiungifatture"}
                   onClick={(event) => handleListItemClick(event, 10)}>
                   <ListItemIcon sx={{ minWidth: 0,mr: open ? 3 : 'auto'}}>
                     <PostAddIcon sx={{ color: "white" }}/>

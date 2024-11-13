@@ -18,6 +18,7 @@ import 'moment/locale/it'
 import { AddCliente } from '../pages/AddCliente';
 import { StampaScheda } from '../pages/StampaScheda ';
 import Register from '../pages/Register';
+import { AddFatture } from '../pages/AddFatture';
 
 
 
@@ -52,7 +53,8 @@ return (
     <Route path="/customerlist" element={<CustomerList />} /> 
     <Route path="/addcustomer" element={<AddCliente />} /> 
     <Route path="/dashboardcustomer/:id" element={<DashboardCustomer />} /> 
-    <Route path="/schededilavoro" element={<SchedeDiLavoro />} /> 
+    <Route path="/schededilavoro" element={<SchedeDiLavoro />} />
+    <Route path="/aggiungifatture" element={<AddFatture />} /> 
     
  
         
