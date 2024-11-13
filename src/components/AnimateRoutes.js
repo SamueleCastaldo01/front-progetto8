@@ -3,12 +3,8 @@ import { useState, useEffect } from "react";
 import Homepage from '../pages/Homepage'
 import { useSelector } from 'react-redux'; 
 import Login from '../pages/Login';
-import { LoginUser } from '../pages/LoginUser';
 import { CustomerList } from '../pages/CustomerList';
 import { DashboardCustomer } from '../pages/DashboardCustomer';
-import { SchedeDiLavoro } from '../pages/SchedeDiLavoro';
-import { AddSchede } from '../pages/AddSchede';
-import AggiungiScheda from './AggiungiScheda';
 import Page_per from '../pages/Page_per';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation} from "react-router-dom";
 import {PrivateRoutes, PrivatePerm, PrivateRoutesUser} from '../components/PrivateRoutes';
@@ -16,9 +12,9 @@ import { AnimatePresence } from 'framer-motion';
 import moment from 'moment/moment';
 import 'moment/locale/it'
 import { AddCliente } from '../pages/AddCliente';
-import { StampaScheda } from '../pages/StampaScheda ';
 import Register from '../pages/Register';
 import { AddFatture } from '../pages/AddFatture';
+import { FattureList } from '../pages/FattureList';
 
 
 
@@ -51,7 +47,7 @@ return (
       <Route path="/customerlist" element={<CustomerList />} /> 
       <Route path="/addcustomer" element={<AddCliente />} /> 
       <Route path="/dashboardcustomer/:id" element={<DashboardCustomer />} /> 
-      <Route path="/schededilavoro" element={<SchedeDiLavoro />} />
+      <Route path="/listafatture" element={<FattureList />} />
       <Route path="/aggiungifatture" element={<AddFatture />} /> 
 
 

@@ -13,8 +13,9 @@ import { StyledDataGrid, theme } from '../components/StyledDataGrid';
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { EditCliente } from '../components/EditCliente';
 
-export function CustomerList() {
-  const [customers, setCustomers] = useState([]);
+export function FattureList() {
+  const [fatture, setFatture] = useState([]);
+  const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState({});
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -35,13 +36,13 @@ export function CustomerList() {
     setEditOpen(true);
   };
 
-  const fetchCustomers = async () => {
+  const fetchInvoices = async () => {
     try {
-      const response = await fetch('http://localhost:3001/clienti', {
+      const response = await fetch('http://localhost:3001/fatture', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Usa il token per l'autenticazione
+          'Authorization': `Bearer ${token}`, // Usa il token per l'autenticazione
         }
       });
   
@@ -50,14 +51,27 @@ export function CustomerList() {
       }
   
       const data = await response.json();
-      setCustomers(data.content); // Imposta i dati dei clienti
+  
+      // Trasforma i dati per il DataGrid
+      const transformedInvoices = data.content.map((item) => ({
+        id: item.id, // Usa `id` come chiave unica per la riga
+        numero: item.numero,
+        importo: item.importo,
+        data: item.data,
+        clienteId: item.cliente.id,
+        nomeContatto: item.cliente.nomeContatto,
+        cognomeContatto: item.cliente.cognomeContatto,
+        nomeStato: item.statoFattura.nomeStato,
+      }));
+  
+      setInvoices(transformedInvoices);
     } catch (error) {
-      console.error("Error fetching customer data:", error);
+      console.error("Error fetching invoice data:", error);
     }
   };
   
   useEffect(() => {
-    fetchCustomers();
+    fetchInvoices();
   }, []);
   
 
@@ -106,19 +120,19 @@ export function CustomerList() {
   }
  
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "nomeContatto", headerName: "Nome Contatto", width: 130 },
-    { field: "cognomeContatto", headerName: "Cognome Contatto", width: 130 },
-    { field: "pec", headerName: "PEC", width: 200 },
-    { field: "telefono", headerName: "Telefono", width: 150 },
-    { field: "partitaIva", headerName: "Partita IVA", width: 150 },
-    { field: "tipoCliente", headerName: "Tipo Cliente", width: 130 },
+    { field: "numero", headerName: "Numero Fattura", width: 130 },
+    { field: "importo", headerName: "Importo (€)", width: 130 },
+    { field: "data", headerName: "Data", width: 130 },
+    { field: "clienteId", headerName: "ID Cliente", width: 100 },
+    { field: "nomeContatto", headerName: "Nome Contatto", width: 150 },
+    { field: "cognomeContatto", headerName: "Cognome Contatto", width: 150 },
+    { field: "nomeStato", headerName: "Stato Fattura", width: 150 },
 ];
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7 }}>
       <div className="container-fluid">
-        <h2 className='titlePage'>Anagrafica Clienti</h2>
+        <h2 className='titlePage'>Lista Fatture</h2>
         <div className='d-flex justify-content-between align-items-center mt-4'>
           <div className='d-flex flex-column  gap-2'>
             <div className='d-flex align-items-center gap-2'>
@@ -195,16 +209,16 @@ export function CustomerList() {
           }
           </div>
           <div>
-            <IconButton variant="contained" onClick={() => {fetchCustomers(""); handleResetSearch()}}>
+            <IconButton variant="contained" onClick={() => {fetchInvoices(""); handleResetSearch()}}>
               <RefreshIcon/>
             </IconButton>
             <Button
               variant="contained"
               color='primary'
               className='me-2'
-              onClick={() => navigate("/addcustomer")}
+              onClick={() => navigate("/aggiungifatture")}
             >
-              Aggiungi Cliente
+              Aggiungi fattura
             </Button>
             <Button
               variant="contained"
@@ -229,7 +243,7 @@ export function CustomerList() {
             ) : (
               <StyledDataGrid
                 onCellClick={() => {}}
-                rows={customers}
+                rows={invoices}
                 columns={columns}
                 checkboxSelection
                 disableRowSelectionOnClick
@@ -256,9 +270,6 @@ export function CustomerList() {
 
         <Dialog maxWidth="md" open={editOpen} onClose={() => setEditOpen(false)}>
           <DialogTitle style={{backgroundColor: "#1E1E1E" }}>Modifica Cliente</DialogTitle>
-          <DialogContent style={{backgroundColor: "#1E1E1E" }}>
-              <EditCliente fetchCustomers={fetchCustomers} customerId={editCustomerId} onClose={() => setEditOpen(false)} />
-          </DialogContent>
         </Dialog>
       </div>
     </motion.div>
