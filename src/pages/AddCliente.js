@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-
+import { notifyErrorAddCliente, notifyErrorAddUsername, successAddCliente } from '../components/Notify';
 
 export function AddCliente() {
     const navigate = useNavigate();
@@ -62,7 +62,53 @@ export function AddCliente() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+   
+
+    const clienteData = {
+        ragioneSociale,
+        partitaIva,
+        email,
+        dataInserimento,
+        dataUltimoContatto,
+        fattutatoAnnuale,
+        pec,
+        telefono,
+        emailContatto,
+        nomeContatto,
+        cognomeContatto,
+        telefonoContatto,
+        logoAziendale,
+        createdAt: new Date().toISOString(), 
+    
     };
+
+
+    try {
+        // Effettua la richiesta fetch all'API
+        const response = await fetch('http://localhost:3001/clienti', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(clienteData),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            successAddCliente(); // Funzione di successo per il messaggio
+            handleReset(); // Reset dei campi dopo il successo
+            navigate('/cliente-list'); // Naviga alla lista dei clienti
+        } else {
+            const error = await response.json();
+            notifyErrorAddCliente(error.message || 'Errore durante l\'aggiunta del cliente.');
+        }
+    } catch (error) {
+        // Gestione degli errori di rete o altro
+        notifyErrorAddCliente('Errore di rete. Riprova più tardi.');
+    }
+
+    };
+
 
 
   //  const handleGeneratePassword = () => {
