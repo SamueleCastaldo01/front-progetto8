@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
+import { loginU } from '../redux/reducers/authSlice';
 
 function Login() {
   const dispatch = useDispatch();
@@ -33,8 +34,9 @@ function Login() {
 
       if (response.ok) {
         localStorage.setItem('authToken', result.accessToken);
+        localStorage.setItem("isAuth", true);
         console.log(result.accessToken)
-        // dispatch(loginU(result.token));  // Usa il tuo reducer per il login, se necessario
+        dispatch(loginU(result.token));  // Usa il tuo reducer per il login, se necessario
         navigate("/");
       } else {
         alert("Credenziali non valide. Riprova.");

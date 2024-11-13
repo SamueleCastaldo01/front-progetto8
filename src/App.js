@@ -34,15 +34,7 @@ function App() {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
 
   useEffect(() => {
-    // Monitoraggio dello stato di autenticazione
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Se l'utente è autenticato, dispatch loginU
-        dispatch(loginU({ email: user.email, uid: user.uid })); // Usa loginU qui
-      } else {
-        dispatch(logoutU()); // Se l'utente esce, dispatch logoutU
-      }
-    });
+
 
     // Aggiungi un event listener per intercettare il prompt di installazione
     const handleBeforeInstallPrompt = (e) => {
@@ -57,7 +49,6 @@ function App() {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
     return () => {
-      unsubscribe(); // Cleanup all'unmount del componente
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
   }, [auth, dispatch]);
@@ -136,11 +127,11 @@ function AppContent({ signUserOut, matches }) {
   return (
     <>
       {/* Mostra MiniDrawer solo se non è la pagina di login o block e lo schermo è grande */}
-      {/** 
+      
       {!matches && !isLoginPage && !isBlockPage && ta && isAuth && <MiniDrawer signUserOut={signUserOut} />}
-      */}
+      
 
-      <MiniDrawer signUserOut={signUserOut} />
+    
 
       <Box
         component="main"

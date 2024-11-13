@@ -29,9 +29,7 @@ function AnimateRoutes ()  {
     const location = useLocation();
     //const [isAuth, setIsAuth] = useState(localStorage.getItem("isAuth"));
     const isAuth = useSelector((state) => state.auth.isAuth);
-    const isAuthUser = useSelector((state) => state.userAuth.isAuthUser); //questo per gli utenti
-
-
+    console.log("isAuth state:", isAuth);
     const timeElapsed = Date.now();  //prende la data attuale in millisecondi
     const today = new Date(timeElapsed);    //converte nel tipo data
     var formattedDate = moment(today).format('DD-MM-YYYY');  //coverte nel formato richiesto
@@ -46,29 +44,28 @@ return (
     <Routes location={location} key={location.pathname}>
       {/**qui ci vanno quelli che non servono i permessi, o se ne creano degli altri */}
 
-    <Route element={<PrivateRoutes isAuth={isAuth} isAuthUser={isAuthUser}/>}> 
-    </Route>
+    <Route element={<PrivateRoutes isAuth={isAuth}/>}> 
 
-    <Route path="/" element={<Homepage />} /> 
-    <Route path="/customerlist" element={<CustomerList />} /> 
-    <Route path="/addcustomer" element={<AddCliente />} /> 
-    <Route path="/dashboardcustomer/:id" element={<DashboardCustomer />} /> 
-    <Route path="/schededilavoro" element={<SchedeDiLavoro />} />
-    <Route path="/aggiungifatture" element={<AddFatture />} /> 
     
+      <Route path="/" element={<Homepage />} /> 
+      <Route path="/customerlist" element={<CustomerList />} /> 
+      <Route path="/addcustomer" element={<AddCliente />} /> 
+      <Route path="/dashboardcustomer/:id" element={<DashboardCustomer />} /> 
+      <Route path="/schededilavoro" element={<SchedeDiLavoro />} />
+      <Route path="/aggiungifatture" element={<AddFatture />} /> 
+
+
+    </Route>
  
         
     <Route path="/login" element={<Login  />} />
     <Route path="/register" element={<Register  />} />
-    <Route path="/loginuser" element={<LoginUser/>} />
     <Route path="/block" element={<Page_per/>} />
 
-    {/** 
+    
     {isAuth ? <Route path="*" element={<Page_per /> }/> :
               <Route path="*" element={<Login  />}/>    }
-      */}
-
-
+      
     </Routes>
 
 
