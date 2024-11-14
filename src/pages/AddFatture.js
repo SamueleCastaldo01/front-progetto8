@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { FormControl, InputLabel, MenuItem, Select, Collapse, Typography } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, Collapse, Typography, CircularProgress } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import moment from 'moment';
 import { notifyErrorAddCliente, notifyErrorAddUsername, successAddCliente } from '../components/Notify';
@@ -12,6 +12,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 export function AddFatture() {
     const navigate = useNavigate();
     const [statiFattura, setStatiFattura] = useState([]);
+    const [isLoadingStatoFattura, setIsLoadingStatoFattura] = useState(true);
     const [idCliente, setIdCliente] = useState('');
     const [data, setData] = useState('');
     const [importo, setImporto] = useState('');
@@ -36,7 +37,7 @@ export function AddFatture() {
             }
             const data = await response.json();
             setStatiFattura(data);
-            console.log(data)
+            setIsLoadingStatoFattura(false);
           } catch (error) {
             console.error("Error fetching invoice data:", error);
           }
@@ -133,6 +134,9 @@ export function AddFatture() {
                         </div>
 
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
+                            {isLoadingStatoFattura ? 
+                            <CircularProgress />
+                            :
                             <Autocomplete
                             disablePortal
                             options={statiFattura}
@@ -141,6 +145,8 @@ export function AddFatture() {
                             onChange={handleChangeAutocomplete} // Gestisci selezione
                             renderInput={(params) => <TextField {...params} label="Stato Fattura" />}
                             />
+                            }
+                      
                         </div>
 
                         <div className='mt-4 col-lg-12'>
