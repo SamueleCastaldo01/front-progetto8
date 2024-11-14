@@ -17,7 +17,7 @@ export function AddFatture() {
     const [data, setData] = useState('');
     const [importo, setImporto] = useState('');
     const [numero, setNumero] = useState('');
-    const [idStatoFattura, setIdStatoFattura] = useState(1);
+    const [idStatoFattura, setIdStatoFattura] = useState('');
 
     const [showOptionalFields, setShowOptionalFields] = useState(false);
     const token = localStorage.getItem('authToken');
@@ -27,7 +27,7 @@ export function AddFatture() {
         setData("");
         setImporto("");
         setNumero("");
-        setIdStatoFattura(1);
+        setIdStatoFattura("");
     };
 
     const successAddFattura = () => {
@@ -100,6 +100,10 @@ export function AddFatture() {
                             <TextField className='w-100' required type="number" label="Numero Fattura" variant="outlined" color='tertiary' value={numero} onChange={(e) => setNumero(e.target.value)} />
                         </div>
 
+                        <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
+                            <TextField className='w-100' required type="number" label="id stato fattura" variant="outlined" color='tertiary' value={idStatoFattura} onChange={(e) => setIdStatoFattura(e.target.value)} />
+                        </div>
+
                         <div className='mt-4 col-lg-12'>
                             <Typography
                                 variant="h6"
@@ -113,24 +117,7 @@ export function AddFatture() {
                                 }
                             </Typography>
                             <Collapse in={showOptionalFields}>
-                                <div className='row'>
-                                    <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                                        <FormControl fullWidth color='tertiary'>
-                                            <InputLabel id="status-select-label">Stato Fattura</InputLabel>
-                                            <Select
-                                                labelId="status-select-label"
-                                                id="status-select"
-                                                value={idStatoFattura}
-                                                label="Stato Fattura"
-                                                onChange={(e) => setIdStatoFattura(e.target.value)}
-                                            >
-                                                <MenuItem value={1}>In Corso</MenuItem>
-                                                <MenuItem value={2}>Pagato</MenuItem>
-                                                <MenuItem value={3}>Annullato</MenuItem>
-                                            </Select>
-                                        </FormControl>
-                                    </div>
-                                </div>
+                               
                             </Collapse>
                         </div>
                     </div>
