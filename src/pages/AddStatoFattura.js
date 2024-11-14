@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-
+import { errorNoty, successNoty} from "../components/Notify";
 
 export function AddStatoFattura() {
     const navigate = useNavigate();
@@ -47,12 +47,13 @@ export function AddStatoFattura() {
                 successAddFattura();
                 handleReset();
                 navigate('/aggiungifatture');
+                successNoty("Stato fatture caricati correttamente")
             } else {
                 const error = await response.json();
-                notifyErrorAddFattura(error.message || 'Errore durante l\'aggiunta della fattura.');
+                errorNoty(error.message || 'Errore durante l\'aggiunta della fattura.');
             }
         } catch (error) {
-            notifyErrorAddFattura('Errore di rete. Riprova più tardi.');
+            errorNoty('Errore di rete. Riprova più tardi.');
         }
     };
 

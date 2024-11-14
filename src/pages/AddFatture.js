@@ -8,7 +8,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import moment from 'moment';
 import { notifyErrorAddCliente, notifyErrorAddUsername, successAddCliente } from '../components/Notify';
 import Autocomplete from '@mui/material/Autocomplete';
-
+import { errorNoty, successNoty} from "../components/Notify";
 
 export function AddFatture() {
     const navigate = useNavigate();
@@ -44,7 +44,12 @@ export function AddFatture() {
                 });
             
                 if (!response.ok) {
+                    const error = await response.json();
+                    errorNoty(
+                    error.message || "Errore durante il caricamento dei clienti."
+                  );
                   throw new Error(`Error: ${response.status} ${response.statusText}`);
+
                 }
                 const data = await response.json();
                 if (data.content && data.content.length > 0) {
@@ -54,12 +59,17 @@ export function AddFatture() {
                 } else {
                     setdataClienti([]); 
                     setStatoClienteRicerca(false);
+                    errorNoty("Clienti non trovati")
                 }
                            
                 setStatoCliente(false);
               } catch (error) {
                 console.error("Error fetching invoice data:", error);
+                errorNoty("Errore")
               }
+              
+        } else {
+            errorNoty("Clienti non trovati");
         }
        
     }
@@ -75,6 +85,10 @@ export function AddFatture() {
             });
         
             if (!response.ok) {
+                const error = await response.json();
+                errorNoty(
+                error.message || "Errore durante il caricamento dei clienti."
+              );
               throw new Error(`Error: ${response.status} ${response.statusText}`);
             }
             const data = await response.json();
@@ -82,6 +96,7 @@ export function AddFatture() {
             setIsLoadingStatoFattura(false);
           } catch (error) {
             console.error("Error fetching invoice data:", error);
+            errorNoty("Errore")
           }
     }
 
@@ -111,8 +126,9 @@ export function AddFatture() {
     const handleConferma = () => {
         if(nomeContatto) {
             setStatoCliente(true);
+         } 
         }
-    }
+    
 
     const handleReset = () => {
         setIdCliente("");
@@ -132,6 +148,7 @@ export function AddFatture() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        
 
         const fatturaData = {
             id_cliente: idCliente,
@@ -156,13 +173,18 @@ export function AddFatture() {
                 successAddFattura();
                 handleReset();
                 navigate('/listafatture');
+                successNoty("Fattura creata correttamente");
             } else {
                 const error = await response.json();
-                notifyErrorAddFattura(error.message || 'Errore durante l\'aggiunta della fattura.');
+                errorNoty(
+                    error.message || "Errore durante il caricamento delle Fatture."
+                  );
+
             }
         } catch (error) {
-            notifyErrorAddFattura('Errore di rete. Riprova più tardi.');
+            errorNoty('Errore di rete. Riprova più tardi.');
         }
+
     };
 
     return (

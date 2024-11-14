@@ -66,12 +66,19 @@ export function AddIndirizzi() {
       });
   
       if (!response.ok) {
+        const error = await response.json();
+        errorNoty(
+          error.message || "Errore durante il caricamento delle province."
+        );
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
       const data = await response.json();
       setDataProvince(data);
+      successNoty("province caricate correttamente.")
+
     } catch (error) {
       console.error("Error fetching invoice data:", error);
+      errorNoty("Errore")
     }
   }
 
@@ -91,13 +98,18 @@ export function AddIndirizzi() {
       });
   
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
+        
+        const error = await response.json();
+        errorNoty(
+          error.message || "Errore durante il caricamento dei comuni."
+        );
+      } 
       const data = await response.json();
       setDataComune(data);
-      console.log(data);
+      successNoty("Dati dei comuni caricati correttamente");
     } catch (error) {
       console.error("Error fetching invoice data:", error);
+      errorNoty("error")
     }
   }
 

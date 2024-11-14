@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { db } from '../firebase-config';
-import { collection, addDoc, query, where, getDocs, Timestamp } from 'firebase/firestore';
-import { notifyErrorAddCliente, notifyErrorAddUsername, successAddCliente } from '../components/Notify';
+import { errorNoty, successNoty} from "../components/Notify";
 
 
 
@@ -85,7 +83,7 @@ export function AddCliente() {
 
         try {
             const token = localStorage.getItem('authToken');
-            // Effettua la richiesta fetch all'API
+            
             const response = await fetch('http://localhost:3001/clienti', {
                 method: 'POST',
                 headers: {
@@ -97,16 +95,17 @@ export function AddCliente() {
 
             if (response.ok) {
                 const data = await response.json();
-                successAddCliente(); // Funzione di successo per il messaggio
-                handleReset(); // Reset dei campi dopo il successo
-                navigate('/cliente-list'); // Naviga alla lista dei clienti
+                handleReset(); 
+                navigate('/cliente-list'); 
+                successNoty("Clienti trovati correttamente")
             } else {
                 const error = await response.json();
-                notifyErrorAddCliente(error.message || 'Errore durante l\'aggiunta del cliente.');
+                errorNoty(error.message || 'Errore durante l\'aggiunta del cliente.');
             }
         } catch (error) {
             // Gestione degli errori di rete o altro
-            notifyErrorAddCliente('Errore di rete. Riprova più tardi.');
+            errorNoty('Errore di rete. Riprova più tardi.');
+            
         }
 
     };
