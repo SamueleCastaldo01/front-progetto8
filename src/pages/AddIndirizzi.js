@@ -3,11 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import {
-  errorNoty,
-  notifyErrorAddUsername,
-  successNoty,
-} from "../components/Notify";
+import {errorNoty,  successNoty,} from "../components/Notify";
 import Autocomplete from '@mui/material/Autocomplete';
 
 export function AddIndirizzi() {
@@ -65,17 +61,23 @@ export function AddIndirizzi() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Usa il token per l'autenticazione
+          'Authorization': `Bearer ${token}`, 
         }
       });
   
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-      const data = await response.json();
-      setDataProvince(data);
-    } catch (error) {
+        const data = await response.json();
+        setDataProvince(data);
+        successNoty("Dati delle province caricati correttamente.");
+      } else {
+        const error = await response.json();
+        errorNoty(
+          error.message || `Errore durante il caricamento delle Province: ${response.status} ${response.statusText}`
+        );
+       }
+      } catch (error) {
       console.error("Error fetching invoice data:", error);
+      errorNoty("Errore di rete. Riprova più tardi.");
     }
   }
 
@@ -95,13 +97,20 @@ export function AddIndirizzi() {
       });
   
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
+        const data = await response.json();
+        setDataComune(data);
+        successNoty("Dati dei comuni caricati correttamente.");
+
+      } else {
+        const error = await response.json();
+        errorNoty(
+          error.message || `Errore durante il caricamento delle Province: ${response.status} ${response.statusText}`
+        );
       }
-      const data = await response.json();
-      setDataComune(data);
-      console.log(data);
+      
     } catch (error) {
       console.error("Error fetching invoice data:", error);
+      errorNoty("Errore di rete. Riprova più tardi.");
     }
   }
 
