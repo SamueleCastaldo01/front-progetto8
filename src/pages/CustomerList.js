@@ -24,9 +24,9 @@ export function CustomerList() {
   const [editCustomerId, setEditCustomerId] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
   const [searchPhone, setSearchPhone] = useState(''); // Stato per il numero di telefono da cercare
-  const [searchNome, setSearchNome] = useState('');  
-  const [searchCognome, setSearchCognome] = useState(''); 
-  const [searchType, setSearhType] = useState('nome'); 
+  const [searchNome, setSearchNome] = useState('');
+  const [searchCognome, setSearchCognome] = useState('');
+  const [searchType, setSearhType] = useState('nome');
 
   const token = localStorage.getItem("authToken");
 
@@ -44,22 +44,22 @@ export function CustomerList() {
           'Authorization': `Bearer ${token}` // Usa il token per l'autenticazione
         }
       });
-  
+
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
-  
+
       const data = await response.json();
       setCustomers(data.content); // Imposta i dati dei clienti
     } catch (error) {
       console.error("Error fetching customer data:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchCustomers();
   }, []);
-  
+
 
 
   const capitalizeWords = (str) => {
@@ -104,7 +104,7 @@ export function CustomerList() {
     setSearchNome("");
     setSearchPhone("");
   }
- 
+
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "nomeContatto", headerName: "Nome Contatto", width: 130 },
@@ -113,7 +113,7 @@ export function CustomerList() {
     { field: "telefono", headerName: "Telefono", width: 150 },
     { field: "partitaIva", headerName: "Partita IVA", width: 150 },
     { field: "tipoCliente", headerName: "Tipo Cliente", width: 130 },
-];
+  ];
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7 }}>
@@ -123,80 +123,80 @@ export function CustomerList() {
           <div className='d-flex flex-column  gap-2'>
             <div className='d-flex align-items-center gap-2'>
               <p className='mb-0'><strong>Ricerca per:</strong></p>
-              <p className={`pSearch ${searchType === "nome" ? "active" : ""}`}  onClick={() => {setSearhType("nome")}}>Nome</p> 
-              <p className={`pSearch ${searchType === "cognome" ? "active" : ""}`} onClick={() => {setSearhType("cognome")}}>Cognome</p>
-              <p className={`pSearch ${searchType === "telefono" ? "active" : ""}`} onClick={() => {setSearhType("telefono")}}>Telefono</p>
+              <p className={`pSearch ${searchType === "nome" ? "active" : ""}`} onClick={() => { setSearhType("nome") }}>Nome</p>
+              <p className={`pSearch ${searchType === "cognome" ? "active" : ""}`} onClick={() => { setSearhType("cognome") }}>Cognome</p>
+              <p className={`pSearch ${searchType === "telefono" ? "active" : ""}`} onClick={() => { setSearhType("telefono") }}>Telefono</p>
             </div>
-          {searchType == "telefono" &&
-          <form className="d-flex align-items-center" onSubmit={handleSearch}>
-            <TextField
-              style={{width: "180px"}}
-              label="Cerca per Telefono"
-              variant="outlined"
-              className="me-2"
-              value={searchPhone}
-              onChange={(e) => setSearchPhone(e.target.value)} // Aggiorna lo stato con il valore inserito
-            />
-            <Button
-              className="me-2"
-              type="submit"
-              color="primary"
-              variant="contained"
-            >
-              Cerca
-            </Button>
-          </form>
-          }
-          {searchType == "nome" &&
-          <form className="d-flex align-items-center" onSubmit={handleSearchNome}>
-            <TextField
-              style={{width: "180px"}}
-              label="Cerca per Nome"
-              variant="outlined"
-              className="me-2"
-              value={searchNome}
-              onChange={(e) => {
-                const formattedName = capitalizeWords(e.target.value); // Capitalizza il valore inserito
-                setSearchNome(formattedName); // Aggiorna lo stato con il valore formattato
-              }}  // Aggiorna lo stato con il valore inserito
-            />
-            <Button
-              className="me-2"
-              type="submit"
-              color="primary"
-              variant="contained"
-            >
-              Cerca
-            </Button>
-          </form>
-          }
-          {searchType == "cognome" &&
-          <form className="d-flex align-items-center" onSubmit={handleSearchCognome}>
-            <TextField
-              style={{width: "180px"}}
-              label="Cerca per Cognome"
-              variant="outlined"
-              className="me-2"
-              value={searchCognome}
-              onChange={(e) => {
-                const formattedCognome = capitalizeWords(e.target.value); // Capitalizza il valore inserito
-                setSearchCognome(formattedCognome); // Aggiorna lo stato con il valore formattato
-              }}  // Aggiorna lo stato con il valore inserito
-            />
-            <Button
-              className="me-2"
-              type="submit"
-              color="primary"
-              variant="contained"
-            >
-              Cerca
-            </Button>
-          </form>
-          }
+            {searchType == "telefono" &&
+              <form className="d-flex align-items-center" onSubmit={handleSearch}>
+                <TextField
+                  style={{ width: "180px" }}
+                  label="Cerca per Telefono"
+                  variant="outlined"
+                  className="me-2"
+                  value={searchPhone}
+                  onChange={(e) => setSearchPhone(e.target.value)} // Aggiorna lo stato con il valore inserito
+                />
+                <Button
+                  className="me-2"
+                  type="submit"
+                  color="primary"
+                  variant="contained"
+                >
+                  Cerca
+                </Button>
+              </form>
+            }
+            {searchType == "nome" &&
+              <form className="d-flex align-items-center" onSubmit={handleSearchNome}>
+                <TextField
+                  style={{ width: "180px" }}
+                  label="Cerca per Nome"
+                  variant="outlined"
+                  className="me-2"
+                  value={searchNome}
+                  onChange={(e) => {
+                    const formattedName = capitalizeWords(e.target.value); // Capitalizza il valore inserito
+                    setSearchNome(formattedName); // Aggiorna lo stato con il valore formattato
+                  }}  // Aggiorna lo stato con il valore inserito
+                />
+                <Button
+                  className="me-2"
+                  type="submit"
+                  color="primary"
+                  variant="contained"
+                >
+                  Cerca
+                </Button>
+              </form>
+            }
+            {searchType == "cognome" &&
+              <form className="d-flex align-items-center" onSubmit={handleSearchCognome}>
+                <TextField
+                  style={{ width: "180px" }}
+                  label="Cerca per Cognome"
+                  variant="outlined"
+                  className="me-2"
+                  value={searchCognome}
+                  onChange={(e) => {
+                    const formattedCognome = capitalizeWords(e.target.value); // Capitalizza il valore inserito
+                    setSearchCognome(formattedCognome); // Aggiorna lo stato con il valore formattato
+                  }}  // Aggiorna lo stato con il valore inserito
+                />
+                <Button
+                  className="me-2"
+                  type="submit"
+                  color="primary"
+                  variant="contained"
+                >
+                  Cerca
+                </Button>
+              </form>
+            }
           </div>
           <div>
-            <IconButton variant="contained" onClick={() => {fetchCustomers(""); handleResetSearch()}}>
-              <RefreshIcon/>
+            <IconButton variant="contained" onClick={() => { fetchCustomers(""); handleResetSearch() }}>
+              <RefreshIcon />
             </IconButton>
             <Button
               variant="contained"
@@ -228,7 +228,7 @@ export function CustomerList() {
               </div>
             ) : (
               <StyledDataGrid
-                onCellClick={() => {}}
+                onCellClick={() => { }}
                 rows={customers}
                 columns={columns}
                 checkboxSelection
@@ -242,22 +242,22 @@ export function CustomerList() {
         <Snackbar open={snackbarOpen} autoHideDuration={2000} onClose={() => setSnackbarOpen(false)} message="Cliente eliminato!" anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} />
 
         <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-          <DialogTitle style={{backgroundColor: "#1E1E1E" }}>Conferma Eliminazione</DialogTitle>
-          <DialogContent style={{backgroundColor: "#1E1E1E" }}>
+          <DialogTitle style={{ backgroundColor: "#1E1E1E" }}>Conferma Eliminazione</DialogTitle>
+          <DialogContent style={{ backgroundColor: "#1E1E1E" }}>
             <DialogContentText>
               Sei sicuro di voler eliminare {selectedCustomerIds.length} cliente{i => (selectedCustomerIds.length > 1 ? 'i' : '')} selezionato{i => (selectedCustomerIds.length > 1 ? 'i' : '')}?
             </DialogContentText>
           </DialogContent >
-          <DialogActions style={{backgroundColor: "#1E1E1E" }}>
+          <DialogActions style={{ backgroundColor: "#1E1E1E" }}>
             <Button onClick={() => setConfirmOpen(false)} color="primary">Annulla</Button>
             <Button onClick={""} color="error">Elimina</Button>
           </DialogActions>
         </Dialog>
 
         <Dialog maxWidth="md" open={editOpen} onClose={() => setEditOpen(false)}>
-          <DialogTitle style={{backgroundColor: "#1E1E1E" }}>Modifica Cliente</DialogTitle>
-          <DialogContent style={{backgroundColor: "#1E1E1E" }}>
-              <EditCliente fetchCustomers={fetchCustomers} customerId={editCustomerId} onClose={() => setEditOpen(false)} />
+          <DialogTitle style={{ backgroundColor: "#1E1E1E" }}>Modifica Cliente</DialogTitle>
+          <DialogContent style={{ backgroundColor: "#1E1E1E" }}>
+            <EditCliente fetchCustomers={fetchCustomers} customerId={editCustomerId} onClose={() => setEditOpen(false)} />
           </DialogContent>
         </Dialog>
       </div>
