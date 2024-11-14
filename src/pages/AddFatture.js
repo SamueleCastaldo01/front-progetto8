@@ -235,6 +235,10 @@ export function AddFatture() {
             </form>
                  }
 
+                 <div className='mt-5'>
+                    <Button className='mt-4' onClick={() => {navigate("/aggiungistatofattura")}} variant="contained">Aggiungi Stato fattura</Button>
+                 </div>
+
      
             </div>
         </motion.div>
