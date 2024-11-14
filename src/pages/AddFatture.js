@@ -9,10 +9,17 @@ import moment from 'moment';
 import { notifyErrorAddCliente, notifyErrorAddUsername, successAddCliente } from '../components/Notify';
 import Autocomplete from '@mui/material/Autocomplete';
 
+
 export function AddFatture() {
     const navigate = useNavigate();
     const [statiFattura, setStatiFattura] = useState([]);
     const [isLoadingStatoFattura, setIsLoadingStatoFattura] = useState(true);
+    const [statoCliente, setStatoCliente] = useState(false);
+    const [dataClienti, setdataClienti] = useState([]);
+    const [statoClienteRicerca, setStatoClienteRicerca] = useState(false);
+    const [isLoadingRicercaCliente, setIsLoadingRicercaCliente] = useState(true);
+    const [ricercaCliente, setRicercaCliente] = useState('');
+    const [nomeContatto, setNomeContatto] = useState('');
     const [idCliente, setIdCliente] = useState('');
     const [data, setData] = useState('');
     const [importo, setImporto] = useState('');
@@ -22,7 +29,40 @@ export function AddFatture() {
     const token = localStorage.getItem('authToken');
 
 
+    const fetchRicercaCliente = async (nomeCliente) => {
+        setIsLoadingRicercaCliente(true);
+        setStatoClienteRicerca(false);
+        setNomeContatto("");
+        try {
+            const response = await fetch('http://localhost:3001/clienti/filtered?nomeContatto=' + nomeCliente, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, // Usa il token per l'autenticazione
+              }
+            });
+        
+            if (!response.ok) {
+              throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            const data = await response.json();
+            if (data.content && data.content.length > 0) {
+                setdataClienti(data.content);
+                setStatoClienteRicerca(true); 
+                setIsLoadingRicercaCliente(false);
+            } else {
+                setdataClienti([]); 
+                setStatoClienteRicerca(false);
+            }
+                       
+            setStatoCliente(false);
+          } catch (error) {
+            console.error("Error fetching invoice data:", error);
+          }
+    }
+
     const fetchStatiFattura = async () => {
+
         try {
             const response = await fetch('http://localhost:3001/stato-fatture', {
               method: 'GET',
@@ -49,11 +89,27 @@ export function AddFatture() {
 
     const handleChangeAutocomplete = (event, newValue) => {
         if (newValue) {
-            setIdStatoFattura(newValue.id); // Imposta lo stato con l'ID selezionato
+            setIdStatoFattura(newValue.id); 
         } else {
-            setIdStatoFattura(null); // Reset se non è selezionato nulla
+            setIdStatoFattura(null); 
         }
       };
+
+    const handleChangeAutocompleteCliente = (event, newValue) => {
+    if (newValue) {
+        setIdCliente(newValue.id);
+        setNomeContatto(newValue.nomeContatto);
+    } else {
+        setIdCliente(null); 
+        setNomeContatto("");
+    }
+    };
+
+    const handleConferma = () => {
+        if(nomeContatto) {
+            setStatoCliente(true);
+        }
+    }
 
     const handleReset = () => {
         setIdCliente("");
@@ -96,7 +152,7 @@ export function AddFatture() {
                 const data = await response.json();
                 successAddFattura();
                 handleReset();
-                navigate('/fattura-list');
+                navigate('/listafatture');
             } else {
                 const error = await response.json();
                 notifyErrorAddFattura(error.message || 'Errore durante l\'aggiunta della fattura.');
@@ -112,62 +168,71 @@ export function AddFatture() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7 }}
         >
-            <div className='container-fluid'>
+            <div className='container-fluid' style={{marginBottom : "400px"}}>
                 <h2 className='titlePage'>Aggiungi una Fattura</h2>
 
-                <form onSubmit={handleSubmit}>
-                    <div className='row'>
-                        <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' required label="ID Cliente" variant="outlined" color='tertiary' value={idCliente} onChange={(e) => setIdCliente(e.target.value)} />
-                        </div>
-
-                        <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' required type="date" label="Data" variant="outlined" color='tertiary' value={data} onChange={(e) => setData(e.target.value)} InputLabelProps={{ shrink: true }} />
-                        </div>
-
-                        <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' required type="number" label="Importo" variant="outlined" color='tertiary' value={importo} onChange={(e) => setImporto(e.target.value)} />
-                        </div>
-
-                        <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' required type="number" label="Numero Fattura" variant="outlined" color='tertiary' value={numero} onChange={(e) => setNumero(e.target.value)} />
-                        </div>
-
-                        <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            {isLoadingStatoFattura ? 
-                            <CircularProgress />
-                            :
-                            <Autocomplete
-                            disablePortal
-                            options={statiFattura}
-                            getOptionLabel={(option) => option.nomeStato} // Visualizza nomeStato nell'elenco
-                            sx={{ width: 300 }}
-                            onChange={handleChangeAutocomplete} // Gestisci selezione
-                            renderInput={(params) => <TextField {...params} label="Stato Fattura" />}
-                            />
-                            }
-                      
-                        </div>
-
-                        <div className='mt-4 col-lg-12'>
-                            <Typography
-                                variant="h6"
-                                onClick={() => setShowOptionalFields(!showOptionalFields)}
-                                style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-                            >
-                                Campi Facoltativi
-                                {showOptionalFields ?
-                                    <ExpandMoreIcon style={{ marginLeft: '8px', transform: 'rotate(180deg)' }} /> :
-                                    <ExpandMoreIcon style={{ marginLeft: '8px' }} />
-                                }
-                            </Typography>
-                            <Collapse in={showOptionalFields}>
-                               
-                            </Collapse>
-                        </div>
-                    </div>
-                    <Button className='mt-4' type="submit" variant="contained">Aggiungi Fattura</Button>
+             
+                <form className='d-flex mt-4'>
+                    <TextField style={{width: "300px"}} required label="Cerca Cliente" variant="outlined" color='tertiary' value={ricercaCliente} onChange={(e) => setRicercaCliente(e.target.value)} />
+                    <Button  onClick={() => {fetchRicercaCliente(ricercaCliente)}} variant="contained">Cerca Cliente</Button>
                 </form>
+
+                    {statoClienteRicerca &&
+                    <div className='d-flex mt-5'>
+                        <Autocomplete
+                        disablePortal
+                        freeSolo={false}
+                        options={dataClienti}
+                        getOptionLabel={(option) => option.nomeContatto} // Visualizza nomeStato nell'elenco
+                        sx={{ width: 300 }}
+                        onChange={handleChangeAutocompleteCliente} // Gestisci selezione
+                        renderInput={(params) => <TextField {...params} label="Seleziona Cliente" />}
+                        />
+                    
+                    <Button  onClick={() => {handleConferma()}} variant="contained">Conferma</Button>
+                    </div>
+                    }
+               
+                {statoCliente && 
+                <form onSubmit={handleSubmit}>
+                <div className='row'>
+                    <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
+                        <TextField className='w-100' required label="Cliente" variant="outlined" color='tertiary' value={nomeContatto} disabled={true} />
+                    </div>
+
+                    <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
+                        <TextField className='w-100' required type="date" label="Data" variant="outlined" color='tertiary' value={data} onChange={(e) => setData(e.target.value)} InputLabelProps={{ shrink: true }} />
+                    </div>
+
+                    <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
+                        <TextField className='w-100' required type="number" label="Importo" variant="outlined" color='tertiary' value={importo} onChange={(e) => setImporto(e.target.value)} />
+                    </div>
+
+                    <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
+                        <TextField className='w-100' required type="number" label="Numero Fattura" variant="outlined" color='tertiary' value={numero} onChange={(e) => setNumero(e.target.value)} />
+                    </div>
+
+                    <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
+                        {isLoadingStatoFattura ? 
+                        <CircularProgress />
+                        :
+                        <Autocomplete
+                        disablePortal
+                        options={statiFattura}
+                        getOptionLabel={(option) => option.nomeStato} // Visualizza nomeStato nell'elenco
+                        sx={{ width: 300 }}
+                        onChange={handleChangeAutocomplete} // Gestisci selezione
+                        renderInput={(params) => <TextField {...params} label="Stato Fattura" />}
+                        />
+                        }
+                  
+                    </div>
+                </div>
+                <Button className='mt-4' type="submit" variant="contained">Aggiungi Fattura</Button>
+            </form>
+                 }
+
+     
             </div>
         </motion.div>
     );
