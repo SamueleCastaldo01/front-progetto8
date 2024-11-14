@@ -65,7 +65,6 @@ export function AddFatture() {
     }
 
     const fetchStatiFattura = async () => {
-
         try {
             const response = await fetch('http://localhost:3001/stato-fatture', {
               method: 'GET',
@@ -90,6 +89,7 @@ export function AddFatture() {
         fetchStatiFattura();
     },[])
 
+    
     const handleChangeAutocomplete = (event, newValue) => {
         if (newValue) {
             setIdStatoFattura(newValue.id); 

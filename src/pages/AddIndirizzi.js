@@ -1,27 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { db } from "../firebase-config";
 import {
-  collection,
-  addDoc,
-  query,
-  where,
-  getDocs,
-  Timestamp,
-} from "firebase/firestore";
-import {
-  notifyErrorAddCliente,
+  errorNoty,
   notifyErrorAddUsername,
-  successAddCliente,
+  successNoty,
 } from "../components/Notify";
+import Autocomplete from '@mui/material/Autocomplete';
 
 export function AddIndirizzi() {
   const navigate = useNavigate();
 
   const [via, setVia] = useState("");
+  const [flagIndirizzo, setFlagIdirizzo] = useState(false);
+  const [dataProvince, setDataProvince] = useState([]);
+  const [dataComune, setDataComune] = useState([]);
+  const [provincia, setProvincia] = useState("");
   const [civico, setCivico] = useState("");
   const [localita, setLocalita] = useState("");
   const [cap, setCap] = useState("");
@@ -37,13 +33,77 @@ export function AddIndirizzi() {
     setComune("");
   };
 
-  const capitalizeWords = (str) => {
-    return str
-      .toLowerCase() // Converte l'intera stringa in minuscolo
-      .split(" ") // Divide la stringa in parole
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalizza la prima lettera di ogni parola
-      .join(" "); // Riunisce le parole in una stringa
+  const handleConferma = () => {
+    if(provincia) {
+      setFlagIdirizzo(true);
+      fetchComuniByProvincia(provincia);
+    } else {
+      setFlagIdirizzo(false);
+    }
+  }    
+
+  const handleChangeAutocomplete = (event, newValue) => {
+    if (newValue) {
+      setProvincia(newValue.provincia); 
+    } else {
+      setProvincia(null); 
+    }
   };
+
+  const handleChangeAutocompleteComune = (event, newValue) => {
+    if (newValue) {
+      setComune(newValue.comune); 
+    } else {
+      setComune(null); 
+    }
+  };
+
+
+  const fetchProvince = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/province', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Usa il token per l'autenticazione
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+      const data = await response.json();
+      setDataProvince(data);
+    } catch (error) {
+      console.error("Error fetching invoice data:", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchProvince();
+  },[])
+
+
+  const fetchComuniByProvincia = async (nomeProvincia) => {
+    try {
+      const response = await fetch('http://localhost:3001/comune/provincia?nomeProvincia=' + nomeProvincia, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, 
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+      const data = await response.json();
+      setDataComune(data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching invoice data:", error);
+    }
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -53,7 +113,7 @@ export function AddIndirizzi() {
       civico,
       localita,
       cap,
-      comune,
+      comune: comune,
       createdAt: new Date().toISOString(),
     };
 
@@ -70,18 +130,17 @@ export function AddIndirizzi() {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        successAddCliente();
+        successNoty("Indirizzo aggiungo correttamente");
         handleReset();
-        navigate("/cliente-list");
+        navigate("/addcustomer");
       } else {
         const error = await response.json();
-        notifyErrorAddCliente(
+        errorNoty(
           error.message || "Errore durante l'aggiunta del cliente."
         );
       }
     } catch (error) {
-      notifyErrorAddCliente("Errore di rete. Riprova più tardi.");
+      errorNoty("Errore di rete. Riprova più tardi.");
     }
   };
 
@@ -94,6 +153,21 @@ export function AddIndirizzi() {
       <div className="container-fluid">
         <h2 className="titlePage">Aggiungi un nuovo indirizzo</h2>
 
+        <div className='d-flex mt-5'>
+          <Autocomplete
+          disablePortal
+          freeSolo={false}
+          options={dataProvince}
+          getOptionLabel={(option) => option.provincia} // Visualizza nomeStato nell'elenco
+          sx={{ width: 300 }}
+          onChange={handleChangeAutocomplete} // Gestisci selezione
+          renderInput={(params) => <TextField {...params} label="inserisci una Provincia" />}
+          />
+      
+          <Button  onClick={() => {handleConferma()}} variant="contained">Conferma</Button>
+          </div>
+
+        {flagIndirizzo &&
         <form onSubmit={handleSubmit}>
           <div className="row">
             <div className="mt-4 col-lg-4 col-md-6 col-sm-12">
@@ -139,6 +213,7 @@ export function AddIndirizzi() {
             <div className="mt-4 col-lg-4 col-md-6 col-sm-12">
               <TextField
                 className="w-100"
+                type="number"
                 required
                 label="Cap"
                 variant="outlined"
@@ -149,22 +224,24 @@ export function AddIndirizzi() {
                 }
               />
             </div>
+
             <div className="d-flex mt-4 col-lg-4 col-md-6 col-sm-12">
-              <TextField
-                className="w-100"
-                required
-                label="Comune"
-                variant="outlined"
-                color="tertiary"
-                value={comune}
-                onChange={(e) => setComune(e.target.value)}
-              />
-            </div>
+            <Autocomplete
+              disablePortal
+              freeSolo={false}
+              options={dataComune}
+              getOptionLabel={(option) => option.comune} // Visualizza nomeStato nell'elenco
+              sx={{ width: 300 }}
+              onChange={handleChangeAutocompleteComune} // Gestisci selezione
+              renderInput={(params) => <TextField {...params} label="inserisci una Provincia" />}
+            />
+          </div>
           </div>
           <Button className="mt-4" type="submit" variant="contained">
             Aggiungi Indirizzo
           </Button>
         </form>
+        }
       </div>
     </motion.div>
   );
