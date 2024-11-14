@@ -135,9 +135,9 @@ export function AddCliente() {
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.7}}
         >
-            <div className='container-fluid'>
+            <div className='container-fluid '>
                 <h2 className='titlePage'>Aggiungi un nuovo Cliente</h2>
 
                 <form onSubmit={handleSubmit}>
@@ -197,7 +197,7 @@ export function AddCliente() {
                         </div>
 
                     </div>
-                    <Button className='mt-4' type="submit" variant="contained">Aggiungi Cliente</Button>
+                    <Button className='mt-4' type="submit" variant="contained">Aggiungi Cliente </Button>
                 </form>
             </div>
         </motion.div>
