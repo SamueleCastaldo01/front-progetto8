@@ -128,7 +128,7 @@ function AppContent({ signUserOut, matches }) {
     <>
       {/* Mostra MiniDrawer solo se non è la pagina di login o block e lo schermo è grande */}
       
-      {!matches && !isLoginPage && !isBlockPage && ta && isAuth && <MiniDrawer signUserOut={signUserOut} />}
+      {!matches && isAuth && <MiniDrawer signUserOut={signUserOut} />}
       
 
     
