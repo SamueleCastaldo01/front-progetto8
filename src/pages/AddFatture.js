@@ -4,60 +4,74 @@ import { motion } from 'framer-motion';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { FormControl, InputLabel, MenuItem, Select, Collapse, Typography } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'; // Import dropdown icon
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { db } from '../firebase-config';
-import { collection, addDoc, query, where, getDocs, Timestamp  } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import moment from 'moment';
 import CodiceFiscale from 'codice-fiscale-js';
 import { notifyErrorAddCliente, notifyErrorAddUsername, successAddCliente } from '../components/Notify';
 
 export function AddFatture() {
     const navigate = useNavigate();
-    const [gender, setGender] = useState('');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('12345678');
-    const [nome, setNome] = useState('');
-    const [cognome, setCognome] = useState('');
-    const [dataNascita, setDataNascita] = useState('');
-    const [cittaNascita, setCittaNascita] = useState('');
-    const [provinciaNascita, setProvinciaNascita] = useState('');
-    const [codiceFiscale, setCodiceFiscale] = useState('');
-    const [telefono, setTelefono] = useState('');
-    const [email, setEmail] = useState('');
-    const [showOptionalFields, setShowOptionalFields] = useState(false); // State for optional fields
+    const [idCliente, setIdCliente] = useState('');
+    const [data, setData] = useState('');
+    const [importo, setImporto] = useState('');
+    const [numero, setNumero] = useState('');
+    const [idStatoFattura, setIdStatoFattura] = useState(1);
 
-    const handleGenderChange = (event) => {
-        setGender(event.target.value);
-    };
+    const [showOptionalFields, setShowOptionalFields] = useState(false);
+    const token = localStorage.getItem('authToken');
 
     const handleReset = () => {
-        setUsername("");
-        setPassword("");
-        setNome("");
-        setCognome("");
-        setGender("");
-        setDataNascita("");
-        setCittaNascita("");
-        setProvinciaNascita("");
-        setCodiceFiscale("");
-        setTelefono("");
-        setEmail("");
+        setIdCliente("");
+        setData("");
+        setImporto("");
+        setNumero("");
+        setIdStatoFattura(1);
     };
 
-    const capitalizeWords = (str) => {
-        return str
-          .toLowerCase() // Converte l'intera stringa in minuscolo
-          .split(' ') // Divide la stringa in parole
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalizza la prima lettera di ogni parola
-          .join(' '); // Riunisce le parole in una stringa
-      };
+    const successAddFattura = () => {
+        alert('Fattura aggiunta con successo!');
+    };
+
+    const notifyErrorAddFattura = (message) => {
+        alert(message);
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        const fatturaData = {
+            id_cliente: idCliente,
+            data: data,
+            importo: importo,
+            numero: numero,
+            id_stato_fattura: idStatoFattura,
+        };
+
+        try {
+            const response = await fetch('http://localhost:3001/fatture', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify(fatturaData),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                successAddFattura();
+                handleReset();
+                navigate('/fattura-list');
+            } else {
+                const error = await response.json();
+                notifyErrorAddFattura(error.message || 'Errore durante l\'aggiunta della fattura.');
+            }
+        } catch (error) {
+            notifyErrorAddFattura('Errore di rete. Riprova più tardi.');
+        }
     };
-
-
 
     return (
         <motion.div
@@ -71,37 +85,30 @@ export function AddFatture() {
                 <form onSubmit={handleSubmit}>
                     <div className='row'>
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' required label="Username" variant="outlined" color='tertiary' value={username} onChange={(e) => setUsername(e.target.value.toLowerCase())} />
-                        </div>
-        
-                        <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' type='number' required label="Numero di Telefono" variant="outlined" color='tertiary' value={telefono} onChange={(e) => setTelefono(e.target.value)} />
-                        </div>
-                        <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' required label="Nome" variant="outlined" color='tertiary' value={nome}   
-                                onChange={(e) => {
-                                const formattedNome = capitalizeWords(e.target.value); 
-                                setNome(formattedNome); }}  
-                            />
-                        </div>
-                        <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' required label="Cognome" variant="outlined" color='tertiary' value={cognome} 
-                                onChange={(e) => {
-                                const formattedCognome = capitalizeWords(e.target.value); 
-                                setCognome(formattedCognome); }}   
-                            />
+                            <TextField className='w-100' required label="ID Cliente" variant="outlined" color='tertiary' value={idCliente} onChange={(e) => setIdCliente(e.target.value)} />
                         </div>
 
-                        {/* Optional Fields Section */}
+                        <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
+                            <TextField className='w-100' required type="date" label="Data" variant="outlined" color='tertiary' value={data} onChange={(e) => setData(e.target.value)} InputLabelProps={{ shrink: true }} />
+                        </div>
+
+                        <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
+                            <TextField className='w-100' required type="number" label="Importo" variant="outlined" color='tertiary' value={importo} onChange={(e) => setImporto(e.target.value)} />
+                        </div>
+
+                        <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
+                            <TextField className='w-100' required type="number" label="Numero Fattura" variant="outlined" color='tertiary' value={numero} onChange={(e) => setNumero(e.target.value)} />
+                        </div>
+
                         <div className='mt-4 col-lg-12'>
-                            <Typography 
-                                variant="h6" 
-                                onClick={() => setShowOptionalFields(!showOptionalFields)} 
+                            <Typography
+                                variant="h6"
+                                onClick={() => setShowOptionalFields(!showOptionalFields)}
                                 style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
                             >
-                                Campi Facoltativi 
-                                {showOptionalFields ? 
-                                    <ExpandMoreIcon style={{ marginLeft: '8px', transform: 'rotate(180deg)' }} /> : 
+                                Campi Facoltativi
+                                {showOptionalFields ?
+                                    <ExpandMoreIcon style={{ marginLeft: '8px', transform: 'rotate(180deg)' }} /> :
                                     <ExpandMoreIcon style={{ marginLeft: '8px' }} />
                                 }
                             </Typography>
@@ -109,36 +116,25 @@ export function AddFatture() {
                                 <div className='row'>
                                     <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
                                         <FormControl fullWidth color='tertiary'>
-                                            <InputLabel id="gender-select-label">Genere</InputLabel>
+                                            <InputLabel id="status-select-label">Stato Fattura</InputLabel>
                                             <Select
-                                                labelId="gender-select-label"
-                                                id="gender-select"
-                                                value={gender}
-                                                label="Genere"
-                                                onChange={handleGenderChange}
+                                                labelId="status-select-label"
+                                                id="status-select"
+                                                value={idStatoFattura}
+                                                label="Stato Fattura"
+                                                onChange={(e) => setIdStatoFattura(e.target.value)}
                                             >
-                                                <MenuItem value="maschio">Maschio</MenuItem>
-                                                <MenuItem value="femmina">Femmina</MenuItem>
+                                                <MenuItem value={1}>In Corso</MenuItem>
+                                                <MenuItem value={2}>Pagato</MenuItem>
+                                                <MenuItem value={3}>Annullato</MenuItem>
                                             </Select>
                                         </FormControl>
-                                    </div>
-                                    <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                                        <TextField className='w-100' type='date' label="Data di nascita" variant="outlined" color='tertiary' value={dataNascita} onChange={(e) => setDataNascita(e.target.value)} InputLabelProps={{ shrink: true }} />
-                                    </div>
-                                    <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                                        <TextField className='w-100' label="Città di nascita" variant="outlined" color='tertiary' value={cittaNascita} onChange={(e) => setCittaNascita(e.target.value)} />
-                                    </div>
-                                    <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                                        <TextField className='w-100' label="Provincia di nascita" variant="outlined" color='tertiary' value={provinciaNascita} onChange={(e) => setProvinciaNascita(e.target.value)} />
-                                    </div>
-                                    <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                                        <TextField className='w-100' label="Email" variant="outlined" color='tertiary' value={email} onChange={(e) => setEmail(e.target.value)} />
                                     </div>
                                 </div>
                             </Collapse>
                         </div>
                     </div>
-                    <Button className='mt-4' type="submit" variant="contained">Aggiungi Cliente</Button>
+                    <Button className='mt-4' type="submit" variant="contained">Aggiungi Fattura</Button>
                 </form>
             </div>
         </motion.div>

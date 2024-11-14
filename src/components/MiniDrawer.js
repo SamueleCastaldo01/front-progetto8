@@ -242,8 +242,8 @@ export default function MiniDrawer( {signUserOut} ) {
       case '/aggiungifatture':
         setSelectedItem('aggiungifatture');
         break;
-      case '/schededilavoro':
-        setSelectedItem('schededilavoro');
+      case '/listafatture':
+        setSelectedItem('listafatture');
         break;
       case '/nota':
         setSelectedItem('ordineclientidata');
@@ -468,9 +468,9 @@ export default function MiniDrawer( {signUserOut} ) {
       {/* Sottocategoria */}
       <Collapse in={openSottocategoriaOrd} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-            <ListItem  disablePadding sx={{ display: 'block' }} onClick={() => {navigate("/schededilavoro")}}>
+            <ListItem  disablePadding sx={{ display: 'block' }} onClick={() => {navigate("/listafatture")}}>
                 <ListItemButton sx={{ pl: 4 }}
-                    selected={selectedItem === "schededilavoro"}
+                    selected={selectedItem === "listafatture"}
                   onClick={(event) => handleListItemClick(event, 9)}>
                   <ListItemIcon sx={{ minWidth: 0,mr: open ? 3 : 'auto'}}>
                     <TaskIcon sx={{ color: "white" }}/>
