@@ -15,6 +15,9 @@ import { AddCliente } from '../pages/AddCliente';
 import Register from '../pages/Register';
 import { AddFatture } from '../pages/AddFatture';
 import { FattureList } from '../pages/FattureList';
+import { AddIndirizzi } from '../pages/AddIndirizzi';
+
+
 
 
 
@@ -49,6 +52,8 @@ return (
       <Route path="/dashboardcustomer/:id" element={<DashboardCustomer />} /> 
       <Route path="/listafatture" element={<FattureList />} />
       <Route path="/aggiungifatture" element={<AddFatture />} /> 
+      <Route path="/addindirizzi" element={<AddIndirizzi />} /> 
+      
 
 
     </Route>

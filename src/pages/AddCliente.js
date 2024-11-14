@@ -199,6 +199,10 @@ export function AddCliente() {
                     </div>
                     <Button className='mt-4' type="submit" variant="contained">Aggiungi Cliente</Button>
                 </form>
+
+                <Button className='mt-4' onClick={() =>{
+                    navigate("/addindirizzi")
+                }} variant="contained">Aggiungi Indirizzo</Button>
             </div>
         </motion.div>
     );
