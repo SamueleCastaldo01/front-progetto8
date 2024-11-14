@@ -44,7 +44,7 @@ function Homepage() {
         <div className='px-4 px-lg-0'>
           <h1 className='titlePage'>EPIC ENERGY SERVICES</h1>
           <div className='mt-4 d-flex flex-column gap-3 justify-content-start'>
-            <img src="logo.png" alt="logo" className='logo' style={{ width: "300px" }} />
+            <img src="logo.png" alt="logo" className='logo' style={{ width: "300px", marginLeft: "60px" }} />
             <div className='d-flex gap-3'>
               <Button style={{ width: "200px", height: "70px" }} variant="contained" onClick={() => { navigate("/customerlist") }}>Clienti</Button>
               <Button style={{ width: "200px", height: "70px" }} variant="contained" onClick={() => { navigate("/listafatture") }}>Fatture</Button>
