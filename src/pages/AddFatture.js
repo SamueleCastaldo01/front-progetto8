@@ -33,32 +33,35 @@ export function AddFatture() {
         setIsLoadingRicercaCliente(true);
         setStatoClienteRicerca(false);
         setNomeContatto("");
-        try {
-            const response = await fetch('http://localhost:3001/clienti/filtered?nomeContatto=' + nomeCliente, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`, // Usa il token per l'autenticazione
+        if(nomeCliente) {
+            try {
+                const response = await fetch('http://localhost:3001/clienti/filtered?nomeContatto=' + nomeCliente, {
+                  method: 'GET',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // Usa il token per l'autenticazione
+                  }
+                });
+            
+                if (!response.ok) {
+                  throw new Error(`Error: ${response.status} ${response.statusText}`);
+                }
+                const data = await response.json();
+                if (data.content && data.content.length > 0) {
+                    setdataClienti(data.content);
+                    setStatoClienteRicerca(true); 
+                    setIsLoadingRicercaCliente(false);
+                } else {
+                    setdataClienti([]); 
+                    setStatoClienteRicerca(false);
+                }
+                           
+                setStatoCliente(false);
+              } catch (error) {
+                console.error("Error fetching invoice data:", error);
               }
-            });
-        
-            if (!response.ok) {
-              throw new Error(`Error: ${response.status} ${response.statusText}`);
-            }
-            const data = await response.json();
-            if (data.content && data.content.length > 0) {
-                setdataClienti(data.content);
-                setStatoClienteRicerca(true); 
-                setIsLoadingRicercaCliente(false);
-            } else {
-                setdataClienti([]); 
-                setStatoClienteRicerca(false);
-            }
-                       
-            setStatoCliente(false);
-          } catch (error) {
-            console.error("Error fetching invoice data:", error);
-          }
+        }
+       
     }
 
     const fetchStatiFattura = async () => {
