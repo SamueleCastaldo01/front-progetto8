@@ -17,14 +17,6 @@ export function AddStatoFattura() {
 
     };
 
-    const successAddFattura = () => {
-        alert('Fattura aggiunta con successo!');
-    };
-
-    const notifyErrorAddFattura = (message) => {
-        alert(message);
-    };
-
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -44,7 +36,6 @@ export function AddStatoFattura() {
 
             if (response.ok) {
                 const data = await response.json();
-                successAddFattura();
                 handleReset();
                 navigate('/aggiungifatture');
                 successNoty("Stato fatture caricati correttamente")
