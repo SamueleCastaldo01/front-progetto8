@@ -1,26 +1,58 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { FormControl, InputLabel, MenuItem, Select, Collapse, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { db } from '../firebase-config';
-import { collection, addDoc, query, where, getDocs, Timestamp } from 'firebase/firestore';
 import moment from 'moment';
-import CodiceFiscale from 'codice-fiscale-js';
 import { notifyErrorAddCliente, notifyErrorAddUsername, successAddCliente } from '../components/Notify';
+import Autocomplete from '@mui/material/Autocomplete';
 
 export function AddFatture() {
     const navigate = useNavigate();
+    const [statiFattura, setStatiFattura] = useState([]);
     const [idCliente, setIdCliente] = useState('');
     const [data, setData] = useState('');
     const [importo, setImporto] = useState('');
     const [numero, setNumero] = useState('');
     const [idStatoFattura, setIdStatoFattura] = useState('');
-
     const [showOptionalFields, setShowOptionalFields] = useState(false);
     const token = localStorage.getItem('authToken');
+
+
+    const fetchStatiFattura = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/stato-fatture', {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, // Usa il token per l'autenticazione
+              }
+            });
+        
+            if (!response.ok) {
+              throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            const data = await response.json();
+            setStatiFattura(data);
+            console.log(data)
+          } catch (error) {
+            console.error("Error fetching invoice data:", error);
+          }
+    }
+
+    useEffect(() => {
+        fetchStatiFattura();
+    },[])
+
+    const handleChangeAutocomplete = (event, newValue) => {
+        if (newValue) {
+            setIdStatoFattura(newValue.id); // Imposta lo stato con l'ID selezionato
+        } else {
+            setIdStatoFattura(null); // Reset se non è selezionato nulla
+        }
+      };
 
     const handleReset = () => {
         setIdCliente("");
@@ -101,7 +133,14 @@ export function AddFatture() {
                         </div>
 
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' required type="number" label="id stato fattura" variant="outlined" color='tertiary' value={idStatoFattura} onChange={(e) => setIdStatoFattura(e.target.value)} />
+                            <Autocomplete
+                            disablePortal
+                            options={statiFattura}
+                            getOptionLabel={(option) => option.nomeStato} // Visualizza nomeStato nell'elenco
+                            sx={{ width: 300 }}
+                            onChange={handleChangeAutocomplete} // Gestisci selezione
+                            renderInput={(params) => <TextField {...params} label="Stato Fattura" />}
+                            />
                         </div>
 
                         <div className='mt-4 col-lg-12'>
