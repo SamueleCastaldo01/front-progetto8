@@ -138,9 +138,6 @@ export function AddFatture() {
         setIdStatoFattura("");
     };
 
-    const successAddFattura = () => {
-        alert('Fattura aggiunta con successo!');
-    };
 
     const notifyErrorAddFattura = (message) => {
         alert(message);
