@@ -5,13 +5,10 @@ import { itIT } from "@mui/x-data-grid/locales";
 import CircularProgress from '@mui/material/CircularProgress';
 import { Paper, IconButton, Snackbar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 import { useState, useEffect } from "react";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import ShareIcon from "@mui/icons-material/Share";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { StyledDataGrid, theme } from '../components/StyledDataGrid';
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import { EditCliente } from '../components/EditCliente';
+import { errorNoty, successNoty} from "../components/Notify";
 
 export function CustomerList() {
   const [customers, setCustomers] = useState([]);
@@ -63,13 +60,17 @@ export function CustomerList() {
       });
 
       if (!response.ok) {
+        const error = await response.json();
+        errorNoty(
+          error.message || "Errore durante il caricamento delle province."
+        );
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
       setCustomers(data.content); // Imposta i dati dei clienti
     } catch (error) {
-      console.error("Error fetching customer data:", error);
+      errorNoty("Error fetching customer data:", error);
     }
   }
 
@@ -85,13 +86,17 @@ export function CustomerList() {
       });
 
       if (!response.ok) {
+        const error = await response.json();
+        errorNoty(
+          error.message || "Errore durante il caricamento delle province."
+        );
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
       setCustomers(data.content); // Imposta i dati dei clienti
     } catch (error) {
-      console.error("Error fetching customer data:", error);
+      errorNoty("Error fetching customer data:", error);
     }
   };
 
