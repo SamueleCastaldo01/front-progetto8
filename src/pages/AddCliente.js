@@ -5,6 +5,10 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { errorNoty, successNoty} from "../components/Notify";
 import Autocomplete from '@mui/material/Autocomplete';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
 
 
 export function AddCliente() {
@@ -141,6 +145,11 @@ export function AddCliente() {
 
     };
 
+    const handleChangeSelect = (event) => {
+        setTipoCliente(event.target.value);
+      };
+    
+
     const handleChangeAutocompleteSedeLegale = (event, newValue) => {
         if (newValue) {
             setIdSedeLegale(newValue.id);
@@ -241,6 +250,22 @@ export function AddCliente() {
                             renderInput={(params) => <TextField {...params} label="Sede Operativa" />}
                             />
                         </div>
+                        <FormControl sx={{ m: 1, maxWidth: 200 }} className='mt-4'>
+                            <InputLabel id="demo-simple-select-label">Tipo Cliente</InputLabel>
+                            <Select
+                            defaultValue={"PA"}
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={tipoCliente}
+                            label="Tipo Cliente"
+                            onChange={handleChangeSelect}
+                            >
+                            <MenuItem value={"PA"}>PA</MenuItem>
+                            <MenuItem value={"SAS"}>SAS</MenuItem>
+                            <MenuItem value={"SPA"}>SPA</MenuItem>
+                            <MenuItem value={"SRL"}>SRL</MenuItem>
+                            </Select>
+                         </FormControl>
                     </div>
                     <h3 className='mt-5'>Campi Facoltativi</h3>
                     <div className='row'>
@@ -254,14 +279,13 @@ export function AddCliente() {
                             <TextField className='w-100'  label="Partita IVA" variant="outlined" color='tertiary' value={partitaIva} onChange={(e) => setPartitaIva(e.target.value)} />
                         </div>
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' label="Tipo Cliente" variant="outlined" color='tertiary' value={tipoCliente} onChange={(e) => setTipoCliente(e.target.value)} />
-                        </div>
-                        <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
                             <TextField className='w-100' type='number'  label="Fattutato Annuale" variant="outlined" color='tertiary' value={fatturatoAnnuale} onChange={(e) => setFatturatoAnnuale(e.target.value)} />
                         </div>
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
                             <TextField className='w-100' label="Email Contatto" variant="outlined" color='tertiary' value={emailContatto} onChange={(e) => setEmailContatto(e.target.value)} />
                         </div>
+                        
+             
                         
                     </div>
                     <Button className='mt-4' type="submit" variant="contained">Aggiungi Cliente </Button>
