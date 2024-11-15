@@ -33,6 +33,7 @@ function Login() {
 
 
       if (response.ok) {
+        localStorage.setItem("profilePic", 'http://res.cloudinary.com/dk15nwyte/image/upload/v1731681603/zeepxk1lwrftzphsf19d.jpg');
         localStorage.setItem('authToken', result.accessToken);
         localStorage.setItem("isAuth", true);
         console.log(result.accessToken)

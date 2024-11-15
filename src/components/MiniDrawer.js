@@ -361,7 +361,7 @@ export default function MiniDrawer( {signUserOut} ) {
                 onClose={handleClose}
               >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={() => {handleClose(); navigate("/myaccount")}}>My account</MenuItem>
                 <MenuItem onClick={ () => {handleClose(); navigate("/login")}}>LogIn</MenuItem>
                 <MenuItem onClick={ () => {signUserOut(); handleClose(); localStorage.setItem(false,"isAuth"); setIsAuth(false); navigate("/login")}}>LogOut</MenuItem> 
 

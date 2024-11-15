@@ -16,6 +16,7 @@ import { AddFatture } from '../pages/AddFatture';
 import { FattureList } from '../pages/FattureList';
 import { AddStatoFattura } from '../pages/AddStatoFattura';
 import { AddIndirizzi } from '../pages/AddIndirizzi';
+import { MyAccount } from '../pages/MyAccount';
 
 
 function AnimateRoutes ()  {
@@ -50,6 +51,7 @@ return (
       <Route path="/aggiungifatture" element={<AddFatture />} /> 
       <Route path="/aggiungistatofattura" element={<AddStatoFattura />} /> 
       <Route path="/addindirizzi" element={<AddIndirizzi />} /> 
+      <Route path="/myaccount" element={<MyAccount />} /> 
       
 
 
