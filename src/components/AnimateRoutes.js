@@ -4,7 +4,6 @@ import Homepage from '../pages/Homepage'
 import { useSelector } from 'react-redux'; 
 import Login from '../pages/Login';
 import { CustomerList } from '../pages/CustomerList';
-import { DashboardCustomer } from '../pages/DashboardCustomer';
 import Page_per from '../pages/Page_per';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation} from "react-router-dom";
 import {PrivateRoutes, PrivatePerm, PrivateRoutesUser} from '../components/PrivateRoutes';
@@ -47,7 +46,6 @@ return (
       <Route path="/" element={<Homepage />} /> 
       <Route path="/customerlist" element={<CustomerList />} /> 
       <Route path="/addcustomer" element={<AddCliente />} /> 
-      <Route path="/dashboardcustomer/:id" element={<DashboardCustomer />} /> 
       <Route path="/listafatture" element={<FattureList />} />
       <Route path="/aggiungifatture" element={<AddFatture />} /> 
       <Route path="/aggiungistatofattura" element={<AddStatoFattura />} /> 

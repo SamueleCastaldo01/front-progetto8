@@ -1,6 +1,5 @@
 import { Outlet, Navigate } from 'react-router-dom'
 import { tutti, dipen, guid, supa } from './utenti';
-import { UserHome } from '../pages/UserHome';
 
 
 export function PrivateRoutes({ isAuth, isAuthUser }) {
