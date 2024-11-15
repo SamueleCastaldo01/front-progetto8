@@ -23,7 +23,7 @@ export function AddCliente() {
     const [nomeContatto, setNomeContatto] = useState('');
     const [cognomeContatto, setCognomeContatto] = useState('');
     const [telefonoContatto, setTelefonoContatto] = useState('');
-    const [tipoCliente, setTipoCliente] = useState('');
+    const [tipoCliente, setTipoCliente] = useState('SAS');
     const [logoAziendale, setLogoAziendale] = useState('');
     const [idSedeLegale, setIdSedeLegale] = useState('');
     const [idSedeOperativa, setIdSedeOperativa] = useState('');
