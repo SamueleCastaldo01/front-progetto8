@@ -170,7 +170,6 @@ export function AddFatture() {
 
             if (response.ok) {
                 const data = await response.json();
-                successAddFattura();
                 handleReset();
                 navigate('/listafatture');
                 successNoty("Fattura creata correttamente");
