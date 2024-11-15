@@ -228,6 +228,9 @@ export function AddCliente() {
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
                             <TextField className='w-100' type='date' label="Data ultimo contatto" variant="outlined" color='tertiary' value={dataUltimoContatto} onChange={(e) => setDataUltimoContatto(e.target.value)} InputLabelProps={{ shrink: true }} />
                         </div>
+                        <div className='d-flex mt-4 col-lg-4 col-md-6 col-sm-12'>
+                            <TextField className='w-100'  label="Partita IVA" variant="outlined" color='tertiary' value={partitaIva} onChange={(e) => setPartitaIva(e.target.value)} />
+                        </div>
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
                             <Autocomplete
                             disablePortal
@@ -274,9 +277,6 @@ export function AddCliente() {
                         </div>
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
                             <TextField className='w-100' type='number'  label="Numero di Telefono Contatto" variant="outlined" color='tertiary' value={telefonoContatto} onChange={(e) => setTelefonoContatto(e.target.value)} />
-                        </div>
-                        <div className='d-flex mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100'  label="Partita IVA" variant="outlined" color='tertiary' value={partitaIva} onChange={(e) => setPartitaIva(e.target.value)} />
                         </div>
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
                             <TextField className='w-100' type='number'  label="Fattutato Annuale" variant="outlined" color='tertiary' value={fatturatoAnnuale} onChange={(e) => setFatturatoAnnuale(e.target.value)} />
