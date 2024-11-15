@@ -18,14 +18,14 @@ export function MyAccount() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7 }}
         >
-            <div className='container-fluid' style={{marginBottom : "400px"}}>
+            <div className='container-fluid'>
                 <h2 className='titlePage'>Il mio Account</h2>
-                <img src={srcImg}/>
-    
-             
-
-     
             </div>
+            <div className='mt-5'>
+            <img src={srcImg}/>
+            </div>
+          
+    
         </motion.div>
     );
 }
