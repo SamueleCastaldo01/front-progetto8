@@ -140,6 +140,34 @@ export function FattureList() {
   //------------------------------------------------------------------------------
   //------------------------------------------------------------------------------
 
+  const fetchDelete = async (idFattura) => {
+    console.log(idFattura);
+    try {
+      const response = await fetch('http://localhost:3001/fatture/' + idFattura, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Usa il token per l'autenticazione
+        }
+      });
+  
+      if (!response.ok) {
+        const error = await response.json();
+        errorNoty(
+          error.message || "Errore durante il caricamento delle fatture."
+        );
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      } 
+  
+      successNoty("Fattura eliminata correttamente");
+      fetchInvoices();
+    } catch (error) {
+      console.error("Error fetching invoice data:", error);
+    }
+  };
+
+    //------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------
 
   const capitalizeWords = (str) => {
     return str
@@ -176,6 +204,7 @@ export function FattureList() {
   }
  
   const columns = [
+    { field: "id", headerName: "Id Fattura", width: 130 },
     { field: "numero", headerName: "Numero Fattura", width: 130 },
     { field: "importo", headerName: "Importo (€)", width: 130 },
     { field: "data", headerName: "Data", width: 130 },
@@ -322,6 +351,7 @@ export function FattureList() {
             >
               Aggiungi fattura
             </Button>
+            { /*
             <Button
               variant="contained"
               color='primary'
@@ -331,8 +361,9 @@ export function FattureList() {
             >
               Modifica
             </Button>
-            <Button color='error' variant="contained" onClick={handleConfirmDelete} disabled={selectedCustomerIds.length === 0}>
-              Elimina {selectedCustomerIds.length > 0 && `(${selectedCustomerIds.length})`}
+            */}
+            <Button color='error' variant="contained" onClick={() => fetchDelete(selectedCustomerIds[0])} disabled={selectedCustomerIds.length !== 1}>
+              Elimina 
             </Button>
           </div>
         </div>
