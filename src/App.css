@@ -91,6 +91,10 @@ button:active {
   perspective: 20px;
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); 
+}
+
 .linq {
   color: white;
   text-decoration: none;
