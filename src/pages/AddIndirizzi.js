@@ -241,7 +241,7 @@ export function AddIndirizzi() {
               getOptionLabel={(option) => option.comune} // Visualizza nomeStato nell'elenco
               sx={{ width: 300 }}
               onChange={handleChangeAutocompleteComune} // Gestisci selezione
-              renderInput={(params) => <TextField {...params} label="inserisci una Provincia" />}
+              renderInput={(params) => <TextField {...params} label="inserisci un comune" />}
             />
           </div>
           </div>
