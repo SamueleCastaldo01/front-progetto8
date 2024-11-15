@@ -25,6 +25,10 @@ export function CustomerList() {
   const [editOpen, setEditOpen] = useState(false);
   const [searchPhone, setSearchPhone] = useState(''); // Stato per il numero di telefono da cercare
   const [searchNome, setSearchNome] = useState('');
+  const [searchMinFatturatoAnnuale, setSearchMinFatturatoAnnuale] = useState('');
+  const [searchMAxFatturatoAnnuale, setSearchMaxFatturatoAnnuale] = useState('');
+  const [searchDataInserimento, setSearchDataInserimento] = useState('');
+  const [searchDataUltimoContatto, setSearchDataUltimoContatto] = useState('');
   const [searchCognome, setSearchCognome] = useState('');
   const [searchType, setSearhType] = useState('nome');
 
@@ -34,6 +38,41 @@ export function CustomerList() {
     setEditCustomerId(customerId);
     setEditOpen(true);
   };
+
+  const fetchSearch = async () => {
+    let search = "";
+    if(searchType == "nome") {
+        search = "nomeContatto=" + searchNome;
+    }
+    if(searchType == "fatturatoA") {
+        search = "minFatturato=" + searchMinFatturatoAnnuale + "&maxFatturato=" +searchMAxFatturatoAnnuale;
+    }
+    if(searchType == "dataIn") {
+      search = "dataInserimento=" + searchDataInserimento;
+    }
+    if(searchType == "dataUlCo") {
+      search = "dataUltimoContatto=" + searchDataUltimoContatto;
+    }
+    try {
+      const response = await fetch('http://localhost:3001/clienti/filtered?' + search, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setCustomers(data.content); // Imposta i dati dei clienti
+    } catch (error) {
+      console.error("Error fetching customer data:", error);
+    }
+  }
+
 
   const fetchCustomers = async () => {
     try {
@@ -92,11 +131,6 @@ export function CustomerList() {
 
   };
 
-  const handleSearchCognome = (e) => {
-    e.preventDefault();
-
-  };
-
 
 
   const handleResetSearch = () => {
@@ -113,6 +147,9 @@ export function CustomerList() {
     { field: "telefono", headerName: "Telefono", width: 150 },
     { field: "partitaIva", headerName: "Partita IVA", width: 150 },
     { field: "tipoCliente", headerName: "Tipo Cliente", width: 130 },
+    { field: "fatturatoAnnuale", headerName: "Fatturato Annuale", width: 130 },
+    { field: "dataInserimento", headerName: "Data Inserimento", width: 130 },
+    { field: "dataUltimoContatto", headerName: "Data Ultimo Contatto", width: 130 },
   ];
 
   return (
@@ -124,31 +161,12 @@ export function CustomerList() {
             <div className='d-flex align-items-center gap-2'>
               <p className='mb-0'><strong>Ricerca per:</strong></p>
               <p className={`pSearch ${searchType === "nome" ? "active" : ""}`} onClick={() => { setSearhType("nome") }}>Nome</p>
-              <p className={`pSearch ${searchType === "cognome" ? "active" : ""}`} onClick={() => { setSearhType("cognome") }}>Cognome</p>
-              <p className={`pSearch ${searchType === "telefono" ? "active" : ""}`} onClick={() => { setSearhType("telefono") }}>Telefono</p>
+              <p className={`pSearch ${searchType === "fatturatoA" ? "active" : ""}`} onClick={() => { setSearhType("fatturatoA") }}>Fatturato Annuale</p>
+              <p className={`pSearch ${searchType === "dataIn" ? "active" : ""}`} onClick={() => { setSearhType("dataIn") }}>Data di inserimento</p>
+              <p className={`pSearch ${searchType === "dataUlCo" ? "active" : ""}`} onClick={() => { setSearhType("dataUlCo") }}>Data di Ultimo contatto</p>
             </div>
-            {searchType == "telefono" &&
-              <form className="d-flex align-items-center" onSubmit={handleSearch}>
-                <TextField
-                  style={{ width: "180px" }}
-                  label="Cerca per Telefono"
-                  variant="outlined"
-                  className="me-2"
-                  value={searchPhone}
-                  onChange={(e) => setSearchPhone(e.target.value)} // Aggiorna lo stato con il valore inserito
-                />
-                <Button
-                  className="me-2"
-                  type="submit"
-                  color="primary"
-                  variant="contained"
-                >
-                  Cerca
-                </Button>
-              </form>
-            }
             {searchType == "nome" &&
-              <form className="d-flex align-items-center" onSubmit={handleSearchNome}>
+              <div className="d-flex align-items-center">
                 <TextField
                   style={{ width: "180px" }}
                   label="Cerca per Nome"
@@ -156,44 +174,89 @@ export function CustomerList() {
                   className="me-2"
                   value={searchNome}
                   onChange={(e) => {
-                    const formattedName = capitalizeWords(e.target.value); // Capitalizza il valore inserito
-                    setSearchNome(formattedName); // Aggiorna lo stato con il valore formattato
-                  }}  // Aggiorna lo stato con il valore inserito
+                    const formattedName = capitalizeWords(e.target.value); 
+                    setSearchNome(formattedName);
+                  }} 
                 />
                 <Button
                   className="me-2"
-                  type="submit"
+                  onClick={() => {fetchSearch()}}
                   color="primary"
                   variant="contained"
                 >
                   Cerca
                 </Button>
-              </form>
+              </div>
             }
-            {searchType == "cognome" &&
-              <form className="d-flex align-items-center" onSubmit={handleSearchCognome}>
+            {searchType == "fatturatoA" &&
+              <div className="d-flex align-items-center">
                 <TextField
                   style={{ width: "180px" }}
-                  label="Cerca per Cognome"
+                  label="Fatturato Minimo Annuale"
                   variant="outlined"
                   className="me-2"
-                  value={searchCognome}
-                  onChange={(e) => {
-                    const formattedCognome = capitalizeWords(e.target.value); // Capitalizza il valore inserito
-                    setSearchCognome(formattedCognome); // Aggiorna lo stato con il valore formattato
-                  }}  // Aggiorna lo stato con il valore inserito
+                  value={searchMinFatturatoAnnuale}
+                  onChange={(e) => setSearchMinFatturatoAnnuale(e.target.value)}
+                />
+                <TextField
+                  style={{ width: "180px" }}
+                  label="Fatturato Massimo Annuale"
+                  variant="outlined"
+                  className="me-2"
+                  value={searchMAxFatturatoAnnuale}
+                  onChange={(e) => setSearchMaxFatturatoAnnuale(e.target.value)}
                 />
                 <Button
                   className="me-2"
-                  type="submit"
+                  onClick={() => {fetchSearch()}}
                   color="primary"
                   variant="contained"
                 >
                   Cerca
                 </Button>
-              </form>
+              </div>
+            }
+            {searchType == "dataUlCo" &&
+              <div className="d-flex align-items-center">
+
+                <TextField  type='date' label="Data Ultimo Contatto" 
+                variant="outlined" color='tertiary'
+                value={searchDataUltimoContatto} 
+                onChange={(e) => setSearchDataUltimoContatto(e.target.value)}
+                 InputLabelProps={{ shrink: true }} 
+                 />
+                <Button
+                  className="me-2"
+                  onClick={() => {fetchSearch()}}
+                  color="primary"
+                  variant="contained"
+                >
+                  Cerca
+                </Button>
+              </div>
+            }
+            {searchType == "dataIn" &&
+              <div className="d-flex align-items-center">
+
+                <TextField  type='date' label="Data di inserimento" 
+                variant="outlined" color='tertiary'
+                value={searchDataInserimento} 
+                onChange={(e) => setSearchDataInserimento(e.target.value)}
+                 InputLabelProps={{ shrink: true }} 
+                 />
+                <Button
+                  className="me-2"
+                  onClick={() => {fetchSearch()}}
+                  color="primary"
+                  variant="contained"
+                >
+                  Cerca
+                </Button>
+              </div>
             }
           </div>
+
+
           <div>
             <IconButton variant="contained" onClick={() => { fetchCustomers(""); handleResetSearch() }}>
               <RefreshIcon />

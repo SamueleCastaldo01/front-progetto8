@@ -59,8 +59,6 @@ export function AddCliente() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
-
         const clienteData = {
             ragioneSociale,
             partitaIva,
