@@ -245,19 +245,19 @@ export function AddCliente() {
                     <h3 className='mt-5'>Campi Facoltativi</h3>
                     <div className='row'>
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' required label="Ragione Sociale" variant="outlined" color='tertiary' value={ragioneSociale} onChange={(e) => setRagioneSociale(e.target.value.toLowerCase())} />
+                            <TextField className='w-100'  label="Ragione Sociale" variant="outlined" color='tertiary' value={ragioneSociale} onChange={(e) => setRagioneSociale(e.target.value.toLowerCase())} />
                         </div>
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' type='number' required label="Numero di Telefono Contatto" variant="outlined" color='tertiary' value={telefonoContatto} onChange={(e) => setTelefonoContatto(e.target.value)} />
+                            <TextField className='w-100' type='number'  label="Numero di Telefono Contatto" variant="outlined" color='tertiary' value={telefonoContatto} onChange={(e) => setTelefonoContatto(e.target.value)} />
                         </div>
                         <div className='d-flex mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' required label="Partita IVA" variant="outlined" color='tertiary' value={partitaIva} onChange={(e) => setPartitaIva(e.target.value)} />
+                            <TextField className='w-100'  label="Partita IVA" variant="outlined" color='tertiary' value={partitaIva} onChange={(e) => setPartitaIva(e.target.value)} />
                         </div>
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
                             <TextField className='w-100' label="Tipo Cliente" variant="outlined" color='tertiary' value={tipoCliente} onChange={(e) => setTipoCliente(e.target.value)} />
                         </div>
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
-                            <TextField className='w-100' type='number' required label="Fattutato Annuale" variant="outlined" color='tertiary' value={fatturatoAnnuale} onChange={(e) => setFatturatoAnnuale(e.target.value)} />
+                            <TextField className='w-100' type='number'  label="Fattutato Annuale" variant="outlined" color='tertiary' value={fatturatoAnnuale} onChange={(e) => setFatturatoAnnuale(e.target.value)} />
                         </div>
                         <div className='mt-4 col-lg-4 col-md-6 col-sm-12'>
                             <TextField className='w-100' label="Email Contatto" variant="outlined" color='tertiary' value={emailContatto} onChange={(e) => setEmailContatto(e.target.value)} />
